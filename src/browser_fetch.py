@@ -74,84 +74,56 @@ def _reduce_noise(page: Page) -> None:
 
 
 def _try_select_india(page: Page) -> None:
-    """Best-effort selection of India on Meta's report page."""
+    """Inspect Meta's country controls and try to select India."""
 
-    # 1. Try normal HTML <select> first.
+    # 1. Native selects
     for i in range(page.locator("select").count()):
         sel = page.locator("select").nth(i)
+
         try:
             labels = sel.locator("option").all_text_contents()
+
             if any(x.strip().lower() == "india" for x in labels):
                 sel.select_option(label="India")
                 page.wait_for_timeout(3000)
                 print("Selected India using native select.")
                 return
+
         except Exception:
             pass
 
-   # 2. Inspect visible ARIA comboboxes/custom dropdowns.
-try:
-    combos = page.locator('[role="combobox"]:visible')
+    # 2. Inspect visible comboboxes
+    try:
+        combos = page.locator('[role="combobox"]:visible')
 
-    print(f"Visible comboboxes found: {combos.count()}")
+        print(f"Visible comboboxes found: {combos.count()}")
 
-    for i in range(combos.count()):
-        combo = combos.nth(i)
+        for i in range(combos.count()):
+            combo = combos.nth(i)
 
-        try:
-            print(
-                f"COMBO {i}: "
-                f"text={combo.inner_text()!r}, "
-                f"aria-label={combo.get_attribute('aria-label')!r}, "
-                f"placeholder={combo.get_attribute('placeholder')!r}, "
-                f"name={combo.get_attribute('name')!r}"
-            )
-        except Exception as exc:
-            print(f"COMBO {i}: could not inspect: {exc}")
+            try:
+                print(
+                    f"COMBO {i}: "
+                    f"text={combo.inner_text()!r}, "
+                    f"aria-label={combo.get_attribute('aria-label')!r}, "
+                    f"placeholder={combo.get_attribute('placeholder')!r}, "
+                    f"name={combo.get_attribute('name')!r}"
+                )
 
-except Exception as exc:
-    print(f"Could not inspect comboboxes: {exc}")
+            except Exception as exc:
+                print(f"COMBO {i}: could not inspect: {exc}")
 
-    # 3. Try text-based dropdown triggers such as Country / Select country.
-    trigger_texts = [
-        "Country",
-        "Select country",
-        "Select a country",
-        "All countries",
-        "Location",
-    ]
+    except Exception as exc:
+        print(f"Could not inspect comboboxes: {exc}")
 
-    for trigger_text in trigger_texts:
-        try:
-            trigger = page.get_by_text(trigger_text, exact=True)
-
-            if trigger.count() > 0:
-                trigger.first.click()
-                page.wait_for_timeout(1000)
-
-                india_option = page.get_by_text("India", exact=True)
-
-                if india_option.count() > 0:
-                    india_option.first.click()
-                    page.wait_for_timeout(3000)
-                    print(f"Selected India using trigger: {trigger_text}")
-                    return
-        except Exception:
-            pass
-
-    # 4. Last attempt: inspect visible India elements.
+    # 3. Report whether India is visible
     try:
         india = page.get_by_text("India", exact=True)
 
         print(f"Visible India elements found: {india.count()}")
 
-        if india.count() > 0:
-            india.first.click()
-            page.wait_for_timeout(3000)
-            print("Clicked visible India element.")
-            return
-    except Exception:
-        pass
+    except Exception as exc:
+        print(f"Could not inspect India elements: {exc}")
 
     print("Could not automatically select India.")
 
