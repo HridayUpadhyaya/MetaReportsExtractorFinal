@@ -161,7 +161,12 @@ def browser_sync_one(
             page.wait_for_timeout(2000)
 
             html = page.content()
+            print(f"Page title: {page.title()}")
+            print(f"Current URL: {page.url}")
+            print(f"HTML length: {len(html)}")
+
             lower_html = html.lower()
+
             print("India occurrences in HTML:", lower_html.count("india"))
             print("PDF occurrences in HTML:", lower_html.count(".pdf"))
             print("Download occurrences in HTML:", lower_html.count("download"))
@@ -174,23 +179,18 @@ def browser_sync_one(
                     print(f"\n===== FIRST {keyword.upper()} MATCH =====")
                     print(html[start:end])
                     print("===== END MATCH =====\n")
-            print(f"Page title: {page.title()}")
-            print(f"Current URL: {page.url}")
-            print(f"HTML length: {len(html)}")
 
-            all_links = page.locator("a").evaluate_all(
-                "(els) => els.map(e => ({text: e.innerText, href: e.href}))"
+            buttons = page.locator("button").evaluate_all(
+                "(els) => els.map(e => e.innerText)"
             )
 
-            print(f"Total links on page: {len(all_links)}")
+            print(f"Total buttons: {len(buttons)}")
 
-            for item in all_links:
-                text = (item.get("text") or "").strip()
-                href = item.get("href") or ""
+            for text in buttons:
+                text = (text or "").strip()
+                if text:
+                    print("BUTTON:", text[:200])
 
-                if "india" in text.lower() or "india" in href.lower() or ".pdf" in href.lower():
-                    print("LINK:", text[:120], href)
-            page.screenshot(path="meta_debug.png", full_page=True)
             hub_cache.parent.mkdir(parents=True, exist_ok=True)
             hub_cache.write_text(html, encoding="utf-8", errors="ignore")
 
