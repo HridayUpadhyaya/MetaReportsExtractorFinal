@@ -1,0 +1,26 @@
+WINDOWS LAUNCH - QUICK VERSION
+
+1) Extract the ZIP.
+2) Double-click setup.bat once.
+3) Double-click run_sync.bat.
+   - This makes ONE request to the Meta hub and AT MOST ONE PDF request.
+   - It never probes hundreds of guessed URLs.
+4) If automatic discovery says the single hub response contains no direct PDF URL:
+   - In Chrome, open the specific India report and copy the direct .pdf download URL.
+   - Open PowerShell in this folder and run:
+     .\.venv\Scripts\python.exe .\meta_india.py direct --pdf-url "PASTE_URL_HERE"
+   - That mode makes EXACTLY ONE Meta HTTP request total.
+5) Your spreadsheet appears at:
+   output\meta_india_reports_latest.xlsx
+6) For a local web UI, double-click run_web.bat and browse to:
+   http://127.0.0.1:8000
+
+FREE PUBLIC WEBSITE
+
+GitHub Pages cannot run Python. For a free public site:
+1) Put this project in your GitHub repository.
+2) In GitHub Settings > Pages, publish the /docs folder from main.
+3) Run publish_to_github.ps1 from your Windows PC whenever you want an update.
+4) Optional: schedule publish_to_github.ps1 weekly with Windows Task Scheduler.
+
+The local PC performs the Meta request; GitHub Pages only hosts the generated XLSX/status. This avoids Meta blocking cloud-runner IPs.

@@ -1,0 +1,3 @@
+# Optional: store known official direct PDF URLs here for your own reference.
+# The script does not probe these automatically. Use:
+# python meta_india.py direct --pdf-url "https://...pdf"

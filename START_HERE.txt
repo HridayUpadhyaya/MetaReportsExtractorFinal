@@ -1,0 +1,16 @@
+START HERE — COMPLETE FIXED PROJECT
+
+Do NOT copy individual patch files into an older folder.
+Use this entire folder as a fresh project.
+
+1) Extract the ZIP.
+2) Double-click setup.bat once.
+3) For the reliable zero-request workflow:
+   - Download the official Meta India PDF in Chrome.
+   - Drag that PDF onto run_local_pdf.bat.
+4) Your finished workbook will be:
+   output\meta_india_reports_latest.xlsx
+
+The local PDF path uses ZERO automated requests to Meta.
+The project has been tested against India-Monthly-Report-Aug31-2026.pdf:
+39 rows, period 2026-07-01 to 2026-07-31, publication 2026-08-31, validation OK.
