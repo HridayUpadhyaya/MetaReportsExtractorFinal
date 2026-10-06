@@ -184,57 +184,57 @@ def browser_sync_one(
             def record_response(response):
                 try:
                     url = response.url
-
+            
                     if url not in network_urls:
                         network_urls.append(url)
-
-                    if "/api/graphql/" in url:
-                        print("\n===== GRAPHQL REQUEST =====")
-
-                        req = response.request
+            
+                    # The report page appears to load its report data through /ajax/bz
+                    if "/ajax/bz" in url:
+                        print("\n===== AJAX BZ RESPONSE =====")
                         print("URL:", url)
-                        print("METHOD:", req.method)
-
-                        try:
-                            print("POST DATA:", req.post_data)
-                        except Exception as exc:
-                            print("Could not read POST data:", exc)
-
-                        print("\n===== GRAPHQL RESPONSE =====")
-
+                        print("STATUS:", response.status)
+            
                         try:
                             body = response.text()
-
-                            print("Response length:", len(body))
-                            print("India occurrences:", body.lower().count("india"))
-                            print("PDF occurrences:", body.lower().count(".pdf"))
-                            print("Download occurrences:", body.lower().count("download"))
-            
                             lower = body.lower()
             
-                            for keyword in ["india", ".pdf", "download"]:
+                            print("Response length:", len(body))
+                            print("India occurrences:", lower.count("india"))
+                            print("PDF occurrences:", lower.count(".pdf"))
+                            print("Download occurrences:", lower.count("download"))
+                            print("Report occurrences:", lower.count("report"))
+            
+                            for keyword in [
+                                "india",
+                                ".pdf",
+                                "download",
+                                "monthly",
+                                "transparency",
+                            ]:
                                 start_pos = 0
                                 matches = 0
             
-                                while matches < 5:
+                                while matches < 10:
                                     pos = lower.find(keyword, start_pos)
             
                                     if pos == -1:
                                         break
             
-                                    start = max(0, pos - 400)
-                                    end = min(len(body), pos + 1000)
+                                    start = max(0, pos - 600)
+                                    end = min(len(body), pos + 1600)
             
-                                    print(f"\n--- {keyword.upper()} MATCH {matches + 1} ---")
+                                    print(
+                                        f"\n--- {keyword.upper()} MATCH {matches + 1} ---"
+                                    )
                                     print(body[start:end])
             
                                     start_pos = pos + len(keyword)
                                     matches += 1
             
                         except Exception as exc:
-                            print("Could not read GraphQL response:", exc)
+                            print("Could not read AJAX response:", exc)
             
-                        print("===== END GRAPHQL =====\n")
+                        print("===== END AJAX BZ RESPONSE =====\n")
             
                 except Exception as exc:
                     print("Network debug error:", exc)
