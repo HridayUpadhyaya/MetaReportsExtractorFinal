@@ -89,29 +89,28 @@ def _try_select_india(page: Page) -> None:
         except Exception:
             pass
 
-    # 2. Try ARIA comboboxes/custom dropdowns.
-    try:
-        combos = page.get_by_role("combobox")
-        print(f"Comboboxes found: {combos.count()}")
+   # 2. Inspect visible ARIA comboboxes/custom dropdowns.
+try:
+    combos = page.locator('[role="combobox"]:visible')
 
-        for i in range(combos.count()):
-            combo = combos.nth(i)
+    print(f"Visible comboboxes found: {combos.count()}")
 
-            try:
-                combo.click()
-                page.wait_for_timeout(1000)
+    for i in range(combos.count()):
+        combo = combos.nth(i)
 
-                india_option = page.get_by_text("India", exact=True)
+        try:
+            print(
+                f"COMBO {i}: "
+                f"text={combo.inner_text()!r}, "
+                f"aria-label={combo.get_attribute('aria-label')!r}, "
+                f"placeholder={combo.get_attribute('placeholder')!r}, "
+                f"name={combo.get_attribute('name')!r}"
+            )
+        except Exception as exc:
+            print(f"COMBO {i}: could not inspect: {exc}")
 
-                if india_option.count() > 0:
-                    india_option.first.click()
-                    page.wait_for_timeout(3000)
-                    print("Selected India using combobox.")
-                    return
-            except Exception:
-                pass
-    except Exception:
-        pass
+except Exception as exc:
+    print(f"Could not inspect comboboxes: {exc}")
 
     # 3. Try text-based dropdown triggers such as Country / Select country.
     trigger_texts = [
