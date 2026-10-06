@@ -109,7 +109,9 @@ def cmd_sync(args):
     hub_cache = CACHE / "meta_hub.html"
 
     state = load_state(STATE)
-    processed_urls = set(state.get("processed_urls", []))
+    # Always inspect/download the newest available Meta India report.
+    # process_pdf_file() can decide whether the resulting data changed.
+    processed_urls = set()
 
     print("Opening Meta hub in a browser ONCE. No Python requests call will be made to the hub.")
 
