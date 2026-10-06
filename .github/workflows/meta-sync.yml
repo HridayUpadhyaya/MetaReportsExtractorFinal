@@ -29,7 +29,7 @@ jobs:
 
       - name: Run Meta extractor
         run: |
-          python meta_india.py
+          python meta_india.py sync
 
       - name: Commit updated files
         run: |
