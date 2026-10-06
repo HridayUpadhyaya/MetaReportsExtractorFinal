@@ -103,34 +103,76 @@ def cmd_file(args):
 
 
 def cmd_sync(args):
-    from src.browser_fetch import discover_india_pdf_links_once, download_one_pdf_via_browser
+    from src.browser_fetch import browser_sync_one
+
+    profile_dir = ROOT / ".browser_profile"
+    hub_cache = CACHE / "meta_hub.html"
+
+    state = load_state(STATE)
+    processed_urls = set(state.get("processed_urls", []))
 
     print("Opening Meta hub in a browser ONCE. No Python requests call will be made to the hub.")
-    links = discover_india_pdf_links_once()
-    if not links:
-        raise RuntimeError(
-            "The rendered Meta page did not expose a direct India PDF link. "
-            "Download the official India PDF in Chrome, then use file mode."
-        )
 
-    url = links[-1]
-    print(f"Found {len(links)} India candidate link(s). Fetching exactly one PDF:\n{url}")
-    pdf = download_one_pdf_via_browser(url, CACHE)
+    result = browser_sync_one(
+        profile_dir=profile_dir,
+        hub_cache=hub_cache,
+        processed_urls=processed_urls,
+        headed=False,
+    )
+
+    if not result.downloaded_url or not result.pdf_bytes:
+        print("No new India PDF found.")
+        return
+
+    CACHE.mkdir(parents=True, exist_ok=True)
+
+    filename = result.filename or "meta-india-report.pdf"
+    pdf = CACHE / filename
+    pdf.write_bytes(result.pdf_bytes)
+
+    url = result.downloaded_url
+
+    print(f"Fetched one PDF:\n{url}")
     print(f"Saved: {pdf}")
-    audit = process_pdf_file(pdf, source_url=url, include_review=args.include_review)
+
+    audit = process_pdf_file(
+        pdf,
+        source_url=url,
+        include_review=args.include_review,
+    )
+
     print(json.dumps(audit, indent=2))
 
 
 def cmd_direct(args):
-    from src.browser_fetch import download_one_pdf_via_browser
+    from src.browser_fetch import browser_download_direct
 
     url = args.pdf_url.strip()
+
     if not url.lower().startswith(("http://", "https://")):
         raise SystemExit("--pdf-url must be a real http(s) URL, not a placeholder.")
 
-    pdf = download_one_pdf_via_browser(url, CACHE)
+    profile_dir = ROOT / ".browser_profile"
+
+    data, filename = browser_download_direct(
+        url=url,
+        profile_dir=profile_dir,
+        headed=False,
+    )
+
+    CACHE.mkdir(parents=True, exist_ok=True)
+
+    pdf = CACHE / filename
+    pdf.write_bytes(data)
+
     print(f"Saved: {pdf}")
-    audit = process_pdf_file(pdf, source_url=url, include_review=args.include_review)
+
+    audit = process_pdf_file(
+        pdf,
+        source_url=url,
+        include_review=args.include_review,
+    )
+
     print(json.dumps(audit, indent=2))
 
 
