@@ -177,6 +177,7 @@ def browser_sync_one(
 
                 if "india" in text.lower() or "india" in href.lower() or ".pdf" in href.lower():
                     print("LINK:", text[:120], href)
+            page.screenshot(path="meta_debug.png", full_page=True)
             hub_cache.parent.mkdir(parents=True, exist_ok=True)
             hub_cache.write_text(html, encoding="utf-8", errors="ignore")
 
