@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -160,6 +161,89 @@ def _download_in_context(context: BrowserContext, page: Page, url: str) -> tuple
 
     final_url = resp.url or url
     return data, _safe_filename(final_url)
+def _extract_latest_india_monthly_report(html: str) -> dict | None:
+    """Extract the newest India Monthly Report entry from Meta's initial HTML."""
+
+    marker = '"static_report_series_title":"India Monthly Report'
+    series_pos = html.find(marker)
+
+    if series_pos == -1:
+        print("India Monthly Report series was not found in the initial response.")
+        return None
+
+    editions_marker = '"report_editions_sorted_by_publish_date":'
+    editions_pos = html.find(editions_marker, series_pos)
+
+    if editions_pos == -1:
+        print("India report edition list was not found.")
+        return None
+
+    array_start = html.find("[", editions_pos)
+
+    if array_start == -1:
+        print("Could not find start of India report edition array.")
+        return None
+
+    # Find the matching closing ] while respecting JSON strings.
+    depth = 0
+    in_string = False
+    escaped = False
+    array_end = None
+
+    for i in range(array_start, len(html)):
+        ch = html[i]
+
+        if in_string:
+            if escaped:
+                escaped = False
+            elif ch == "\\":
+                escaped = True
+            elif ch == '"':
+                in_string = False
+            continue
+
+        if ch == '"':
+            in_string = True
+        elif ch == "[":
+            depth += 1
+        elif ch == "]":
+            depth -= 1
+
+            if depth == 0:
+                array_end = i + 1
+                break
+
+    if array_end is None:
+        print("Could not find end of India report edition array.")
+        return None
+
+    raw_array = html[array_start:array_end]
+
+    try:
+        editions = json.loads(raw_array)
+    except json.JSONDecodeError as exc:
+        print(f"Could not parse India report editions: {exc}")
+        return None
+
+    if not editions:
+        print("India report edition array was empty.")
+        return None
+
+    # Meta already supplies this array sorted by publish date, newest first.
+    latest = editions[0]
+
+    url = latest.get("cdn_url")
+
+    if not url:
+        print("Newest India report does not contain cdn_url.")
+        return None
+
+    print("Latest India monthly report discovered:")
+    print("  Month:", latest.get("month"))
+    print("  Time period:", latest.get("time_period"))
+    print("  URL:", url)
+
+    return latest
 
 
 def browser_sync_one(
@@ -168,167 +252,92 @@ def browser_sync_one(
     processed_urls: set[str],
     headed: bool = True,
 ) -> BrowserSyncResult:
-    """Open Meta once in Chrome, discover links from that loaded page, fetch one PDF.
+    """Open Meta once, extract the newest India monthly report, and download it."""
 
-    There is no requests.get() call to the Meta hub, no HEAD request, no URL
-    guessing, no retry loop, and PDFs are processed sequentially one at a time.
-    """
     with sync_playwright() as p:
         context = _launch_context(p, profile_dir, headed=headed)
+
         try:
             page = context.pages[0] if context.pages else context.new_page()
+
             _reduce_noise(page)
-            # Debug: record network responses used by Meta to load report data.
-            network_urls = []
 
-            def record_response(response):
-                try:
-                    url = response.url
-                    content_type = (response.headers.get("content-type") or "").lower()
-            
-                    if url not in network_urls:
-                        network_urls.append(url)
-            
-                    # Only inspect text-like responses.
-                    if not any(x in content_type for x in [
-                        "json",
-                        "javascript",
-                        "text",
-                        "html",
-                    ]):
-                        return
-            
-                    try:
-                        body = response.text()
-                    except Exception:
-                        return
-            
-                    # Ignore tiny responses.
-                    if len(body) < 500:
-                        return
-            
-                    lower = body.lower()
-            
-                    interesting = (
-                        "india" in lower
-                        or ".pdf" in lower
-                        or "monthly report" in lower
-                        or "download" in lower
-                    )
-            
-                    if not interesting:
-                        return
-            
-                    print("\n========================================")
-                    print("INTERESTING NETWORK RESPONSE")
-                    print("URL:", url)
-                    print("STATUS:", response.status)
-                    print("CONTENT-TYPE:", content_type)
-                    print("LENGTH:", len(body))
-                    print("India:", lower.count("india"))
-                    print("PDF:", lower.count(".pdf"))
-                    print("Download:", lower.count("download"))
-                    print("Monthly report:", lower.count("monthly report"))
-            
-                    for keyword in ["india", ".pdf", "monthly report", "download"]:
-                        pos = lower.find(keyword)
-            
-                        if pos != -1:
-                            start = max(0, pos - 800)
-                            end = min(len(body), pos + 2200)
-            
-                            print(f"\n--- {keyword.upper()} CONTEXT ---")
-                            print(body[start:end])
-            
-                    print("========================================\n")
-            
-                except Exception as exc:
-                    print("Network debug error:", exc)
-
-            page.on("response", record_response)
+            print("Opening Meta regulatory transparency page once...")
 
             try:
-                response = page.goto(HUB_URL, wait_until="domcontentloaded", timeout=90_000)
+                response = page.goto(
+                    HUB_URL,
+                    wait_until="domcontentloaded",
+                    timeout=90_000,
+                )
             except PlaywrightError as exc:
-                raise BrowserFetchError(f"Chrome could not open the Meta report hub: {exc}") from exc
+                raise BrowserFetchError(
+                    f"Chrome could not open the Meta report hub: {exc}"
+                ) from exc
 
             status = response.status if response else None
+
             if status and status >= 400:
                 raise BrowserFetchError(
-                    f"Meta returned HTTP {status} even to Chrome automation. "
-                    "No retry was attempted. You can still use local-file mode, which makes zero scripted Meta requests."
+                    f"Meta returned HTTP {status} to Chrome automation."
                 )
 
-            # Give the React/Next page time to render. No repeated reloads.
-            page.wait_for_timeout(7000)
-            print("\n===== POSSIBLE META DATA/API REQUESTS =====")
+            if response is None:
+                raise BrowserFetchError(
+                    "Meta page opened without a readable HTTP response."
+                )
 
-            for url in network_urls:
-                low = url.lower()
+            # IMPORTANT:
+            # Use the original server response, not page.content().
+            # The India report metadata is embedded here.
+            try:
+                initial_html = response.text()
+            except Exception as exc:
+                raise BrowserFetchError(
+                    f"Could not read Meta's initial page response: {exc}"
+                ) from exc
 
-                if any(word in low for word in [
-                    "graphql",
-                    "ajax",
-                    "report",
-                    "transparency",
-                    "download",
-                    "api",
-                ]):
-                    print("NETWORK:", url)
+            print(f"Initial Meta response length: {len(initial_html)}")
 
-            print("===== END NETWORK REQUESTS =====\n")
-         #   _try_select_india(page)
-            page.wait_for_timeout(2000)
-
-            html = page.content()
-            print(f"Page title: {page.title()}")
-            print(f"Current URL: {page.url}")
-            print(f"HTML length: {len(html)}")
-
-            lower_html = html.lower()
-
-            print("India occurrences in HTML:", lower_html.count("india"))
-            print("PDF occurrences in HTML:", lower_html.count(".pdf"))
-            print("Download occurrences in HTML:", lower_html.count("download"))
-
-            for keyword in ["india", ".pdf", "download"]:
-                pos = lower_html.find(keyword)
-                if pos != -1:
-                    start = max(0, pos - 500)
-                    end = min(len(html), pos + 1000)
-                    print(f"\n===== FIRST {keyword.upper()} MATCH =====")
-                    print(html[start:end])
-                    print("===== END MATCH =====\n")
-
-            buttons = page.locator("button").evaluate_all(
-                "(els) => els.map(e => e.innerText)"
+            # Keep a local diagnostic copy.
+            hub_cache.parent.mkdir(parents=True, exist_ok=True)
+            hub_cache.write_text(
+                initial_html,
+                encoding="utf-8",
+                errors="ignore",
             )
 
-            print(f"Total buttons: {len(buttons)}")
+            latest = _extract_latest_india_monthly_report(initial_html)
 
-            for text in buttons:
-                text = (text or "").strip()
-                if text:
-                    print("BUTTON:", text[:200])
+            if not latest:
+                print("No India Monthly Report metadata found.")
+                return BrowserSyncResult(
+                    hub_status=status,
+                    candidates=[],
+                )
 
-            hub_cache.parent.mkdir(parents=True, exist_ok=True)
-            hub_cache.write_text(html, encoding="utf-8", errors="ignore")
+            url = latest["cdn_url"]
+            month = latest.get("month") or "unknown-month"
 
-            candidates = extract_india_pdf_links(html)
-            pending = [c for c in candidates if c.url not in processed_urls]
-            pending.sort(key=lambda c: (c.date_key, c.url), reverse=True)
-            if not pending:
-                return BrowserSyncResult(hub_status=status, candidates=candidates)
+            print(f"Newest report: {month}")
+            print("Downloading exactly one report from Meta CDN...")
 
-            chosen = pending[0]
-            data, filename = _download_in_context(context, page, chosen.url)
+            data, filename = _download_in_context(
+                context,
+                page,
+                url,
+            )
+
+            print(f"Downloaded {len(data)} bytes.")
+
             return BrowserSyncResult(
                 hub_status=status,
-                candidates=candidates,
-                downloaded_url=chosen.url,
+                candidates=[],
+                downloaded_url=url,
                 pdf_bytes=data,
                 filename=filename,
             )
+
         finally:
             context.close()
 
