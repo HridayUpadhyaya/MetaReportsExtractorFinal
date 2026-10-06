@@ -178,6 +178,18 @@ def browser_sync_one(
         try:
             page = context.pages[0] if context.pages else context.new_page()
             _reduce_noise(page)
+            # Debug: record network responses used by Meta to load report data.
+            network_urls = []
+
+            def record_response(response):
+                try:
+                    url = response.url
+                    if url not in network_urls:
+                        network_urls.append(url)
+                except Exception:
+                    pass
+
+            page.on("response", record_response)
 
             try:
                 response = page.goto(HUB_URL, wait_until="domcontentloaded", timeout=90_000)
