@@ -74,22 +74,87 @@ def _reduce_noise(page: Page) -> None:
 
 
 def _try_select_india(page: Page) -> None:
-    """Best-effort selection of India without depending on Meta's exact UI.
+    """Best-effort selection of India on Meta's report page."""
 
-    Failure is harmless: extract_india_pdf_links() still filters India links
-    from the loaded page/embedded JSON.
-    """
-    # Native selects are the safest thing to manipulate automatically.
+    # 1. Try normal HTML <select> first.
     for i in range(page.locator("select").count()):
         sel = page.locator("select").nth(i)
         try:
             labels = sel.locator("option").all_text_contents()
             if any(x.strip().lower() == "india" for x in labels):
                 sel.select_option(label="India")
-                page.wait_for_timeout(2500)
+                page.wait_for_timeout(3000)
+                print("Selected India using native select.")
                 return
         except Exception:
             pass
+
+    # 2. Try ARIA comboboxes/custom dropdowns.
+    try:
+        combos = page.get_by_role("combobox")
+        print(f"Comboboxes found: {combos.count()}")
+
+        for i in range(combos.count()):
+            combo = combos.nth(i)
+
+            try:
+                combo.click()
+                page.wait_for_timeout(1000)
+
+                india_option = page.get_by_text("India", exact=True)
+
+                if india_option.count() > 0:
+                    india_option.first.click()
+                    page.wait_for_timeout(3000)
+                    print("Selected India using combobox.")
+                    return
+            except Exception:
+                pass
+    except Exception:
+        pass
+
+    # 3. Try text-based dropdown triggers such as Country / Select country.
+    trigger_texts = [
+        "Country",
+        "Select country",
+        "Select a country",
+        "All countries",
+        "Location",
+    ]
+
+    for trigger_text in trigger_texts:
+        try:
+            trigger = page.get_by_text(trigger_text, exact=True)
+
+            if trigger.count() > 0:
+                trigger.first.click()
+                page.wait_for_timeout(1000)
+
+                india_option = page.get_by_text("India", exact=True)
+
+                if india_option.count() > 0:
+                    india_option.first.click()
+                    page.wait_for_timeout(3000)
+                    print(f"Selected India using trigger: {trigger_text}")
+                    return
+        except Exception:
+            pass
+
+    # 4. Last attempt: inspect visible India elements.
+    try:
+        india = page.get_by_text("India", exact=True)
+
+        print(f"Visible India elements found: {india.count()}")
+
+        if india.count() > 0:
+            india.first.click()
+            page.wait_for_timeout(3000)
+            print("Clicked visible India element.")
+            return
+    except Exception:
+        pass
+
+    print("Could not automatically select India.")
 
 
 def _download_in_context(context: BrowserContext, page: Page, url: str) -> tuple[bytes, str]:
