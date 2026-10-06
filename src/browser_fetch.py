@@ -161,6 +161,22 @@ def browser_sync_one(
             page.wait_for_timeout(2000)
 
             html = page.content()
+            print(f"Page title: {page.title()}")
+            print(f"Current URL: {page.url}")
+            print(f"HTML length: {len(html)}")
+
+            all_links = page.locator("a").evaluate_all(
+                "(els) => els.map(e => ({text: e.innerText, href: e.href}))"
+            )
+
+            print(f"Total links on page: {len(all_links)}")
+
+            for item in all_links:
+                text = (item.get("text") or "").strip()
+                href = item.get("href") or ""
+
+                if "india" in text.lower() or "india" in href.lower() or ".pdf" in href.lower():
+                    print("LINK:", text[:120], href)
             hub_cache.parent.mkdir(parents=True, exist_ok=True)
             hub_cache.write_text(html, encoding="utf-8", errors="ignore")
 
