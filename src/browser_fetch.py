@@ -161,6 +161,19 @@ def browser_sync_one(
             page.wait_for_timeout(2000)
 
             html = page.content()
+            lower_html = html.lower()
+            print("India occurrences in HTML:", lower_html.count("india"))
+            print("PDF occurrences in HTML:", lower_html.count(".pdf"))
+            print("Download occurrences in HTML:", lower_html.count("download"))
+
+            for keyword in ["india", ".pdf", "download"]:
+                pos = lower_html.find(keyword)
+                if pos != -1:
+                    start = max(0, pos - 500)
+                    end = min(len(html), pos + 1000)
+                    print(f"\n===== FIRST {keyword.upper()} MATCH =====")
+                    print(html[start:end])
+                    print("===== END MATCH =====\n")
             print(f"Page title: {page.title()}")
             print(f"Current URL: {page.url}")
             print(f"HTML length: {len(html)}")
