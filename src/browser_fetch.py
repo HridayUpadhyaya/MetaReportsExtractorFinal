@@ -181,7 +181,7 @@ def browser_sync_one(
             # Debug: record network responses used by Meta to load report data.
             network_urls = []
 
-           def record_response(response):
+            def record_response(response):
                 try:
                     url = response.url
                     content_type = (response.headers.get("content-type") or "").lower()
