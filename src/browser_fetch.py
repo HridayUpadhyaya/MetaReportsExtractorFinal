@@ -181,60 +181,66 @@ def browser_sync_one(
             # Debug: record network responses used by Meta to load report data.
             network_urls = []
 
-            def record_response(response):
+           def record_response(response):
                 try:
                     url = response.url
+                    content_type = (response.headers.get("content-type") or "").lower()
             
                     if url not in network_urls:
                         network_urls.append(url)
             
-                    # The report page appears to load its report data through /ajax/bz
-                    if "/ajax/bz" in url:
-                        print("\n===== AJAX BZ RESPONSE =====")
-                        print("URL:", url)
-                        print("STATUS:", response.status)
+                    # Only inspect text-like responses.
+                    if not any(x in content_type for x in [
+                        "json",
+                        "javascript",
+                        "text",
+                        "html",
+                    ]):
+                        return
             
-                        try:
-                            body = response.text()
-                            lower = body.lower()
+                    try:
+                        body = response.text()
+                    except Exception:
+                        return
             
-                            print("Response length:", len(body))
-                            print("India occurrences:", lower.count("india"))
-                            print("PDF occurrences:", lower.count(".pdf"))
-                            print("Download occurrences:", lower.count("download"))
-                            print("Report occurrences:", lower.count("report"))
+                    # Ignore tiny responses.
+                    if len(body) < 500:
+                        return
             
-                            for keyword in [
-                                "india",
-                                ".pdf",
-                                "download",
-                                "monthly",
-                                "transparency",
-                            ]:
-                                start_pos = 0
-                                matches = 0
+                    lower = body.lower()
             
-                                while matches < 10:
-                                    pos = lower.find(keyword, start_pos)
+                    interesting = (
+                        "india" in lower
+                        or ".pdf" in lower
+                        or "monthly report" in lower
+                        or "download" in lower
+                    )
             
-                                    if pos == -1:
-                                        break
+                    if not interesting:
+                        return
             
-                                    start = max(0, pos - 600)
-                                    end = min(len(body), pos + 1600)
+                    print("\n========================================")
+                    print("INTERESTING NETWORK RESPONSE")
+                    print("URL:", url)
+                    print("STATUS:", response.status)
+                    print("CONTENT-TYPE:", content_type)
+                    print("LENGTH:", len(body))
+                    print("India:", lower.count("india"))
+                    print("PDF:", lower.count(".pdf"))
+                    print("Download:", lower.count("download"))
+                    print("Monthly report:", lower.count("monthly report"))
             
-                                    print(
-                                        f"\n--- {keyword.upper()} MATCH {matches + 1} ---"
-                                    )
-                                    print(body[start:end])
+                    for keyword in ["india", ".pdf", "monthly report", "download"]:
+                        pos = lower.find(keyword)
             
-                                    start_pos = pos + len(keyword)
-                                    matches += 1
+                        if pos != -1:
+                            start = max(0, pos - 800)
+                            end = min(len(body), pos + 2200)
             
-                        except Exception as exc:
-                            print("Could not read AJAX response:", exc)
+                            print(f"\n--- {keyword.upper()} CONTEXT ---")
+                            print(body[start:end])
             
-                        print("===== END AJAX BZ RESPONSE =====\n")
+                    print("========================================\n")
             
                 except Exception as exc:
                     print("Network debug error:", exc)
