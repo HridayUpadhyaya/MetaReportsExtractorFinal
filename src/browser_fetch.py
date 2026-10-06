@@ -205,7 +205,23 @@ def browser_sync_one(
 
             # Give the React/Next page time to render. No repeated reloads.
             page.wait_for_timeout(7000)
-            _try_select_india(page)
+            print("\n===== POSSIBLE META DATA/API REQUESTS =====")
+
+            for url in network_urls:
+                low = url.lower()
+
+                if any(word in low for word in [
+                    "graphql",
+                    "ajax",
+                    "report",
+                    "transparency",
+                    "download",
+                    "api",
+                ]):
+                    print("NETWORK:", url)
+
+            print("===== END NETWORK REQUESTS =====\n")
+         #   _try_select_india(page)
             page.wait_for_timeout(2000)
 
             html = page.content()
