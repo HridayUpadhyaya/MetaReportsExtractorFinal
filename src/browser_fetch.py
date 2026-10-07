@@ -161,30 +161,42 @@ def _download_in_context(context: BrowserContext, page: Page, url: str) -> tuple
 
     final_url = resp.url or url
     return data, _safe_filename(final_url)
-def _extract_latest_india_monthly_report(html: str) -> dict | None:
-    """Extract the newest India Monthly Report entry from Meta's initial HTML."""
+def _extract_india_monthly_reports(html: str) -> list[dict]:
+    """
+    Extract every India Monthly Report edition from Meta's
+    initial regulatory-transparency HTML response.
+
+    Meta supplies report_editions_sorted_by_publish_date
+    newest first.
+    """
 
     marker = '"static_report_series_title":"India Monthly Report'
     series_pos = html.find(marker)
 
     if series_pos == -1:
-        print("India Monthly Report series was not found in the initial response.")
-        return None
+        raise BrowserFetchError(
+            "India Monthly Report series was not found "
+            "in Meta's initial response."
+        )
 
     editions_marker = '"report_editions_sorted_by_publish_date":'
-    editions_pos = html.find(editions_marker, series_pos)
+    editions_pos = html.find(
+        editions_marker,
+        series_pos,
+    )
 
     if editions_pos == -1:
-        print("India report edition list was not found.")
-        return None
+        raise BrowserFetchError(
+            "India Monthly Report edition list was not found."
+        )
 
     array_start = html.find("[", editions_pos)
 
     if array_start == -1:
-        print("Could not find start of India report edition array.")
-        return None
+        raise BrowserFetchError(
+            "Could not find the start of the India report edition array."
+        )
 
-    # Find the matching closing ] while respecting JSON strings.
     depth = 0
     in_string = False
     escaped = False
@@ -196,16 +208,21 @@ def _extract_latest_india_monthly_report(html: str) -> dict | None:
         if in_string:
             if escaped:
                 escaped = False
+
             elif ch == "\\":
                 escaped = True
+
             elif ch == '"':
                 in_string = False
+
             continue
 
         if ch == '"':
             in_string = True
+
         elif ch == "[":
             depth += 1
+
         elif ch == "]":
             depth -= 1
 
@@ -214,55 +231,106 @@ def _extract_latest_india_monthly_report(html: str) -> dict | None:
                 break
 
     if array_end is None:
-        print("Could not find end of India report edition array.")
-        return None
+        raise BrowserFetchError(
+            "Could not find the end of the India report edition array."
+        )
 
     raw_array = html[array_start:array_end]
 
     try:
         editions = json.loads(raw_array)
+
     except json.JSONDecodeError as exc:
-        print(f"Could not parse India report editions: {exc}")
-        return None
+        raise BrowserFetchError(
+            f"Could not parse India report edition metadata: {exc}"
+        ) from exc
 
     if not editions:
-        print("India report edition array was empty.")
-        return None
+        raise BrowserFetchError(
+            "Meta returned an empty India Monthly Report edition list."
+        )
 
-    # Meta already supplies this array sorted by publish date, newest first.
-    latest = editions[0]
+    results = []
 
-    url = latest.get("cdn_url")
+    for edition in editions:
+        if not isinstance(edition, dict):
+            continue
 
-    if not url:
-        print("Newest India report does not contain cdn_url.")
-        return None
+        url = edition.get("cdn_url")
 
-    print("Latest India monthly report discovered:")
-    print("  Month:", latest.get("month"))
-    print("  Time period:", latest.get("time_period"))
-    print("  URL:", url)
+        if not url:
+            continue
 
-    return latest
+        publication_month = edition.get("month")
+        time_period = edition.get("time_period")
+        platform = edition.get("platform")
+        language = edition.get("language")
 
+        # Stable identity.
+        #
+        # DO NOT use the CDN URL as the identity because Meta's
+        # signed CDN URL can change even for the same report.
+        edition_key = "|".join(
+            [
+                str(time_period or ""),
+                str(publication_month or ""),
+                str(platform or ""),
+                str(language or ""),
+            ]
+        )
 
-def browser_sync_one(
+        item = dict(edition)
+        item["edition_key"] = edition_key
+
+        results.append(item)
+
+    if not results:
+        raise BrowserFetchError(
+            "India Monthly Report editions were found, "
+            "but none contained a downloadable CDN URL."
+        )
+
+    print(
+        f"Found {len(results)} India Monthly Report editions on Meta."
+    )
+
+    print("Newest Meta publication:", results[0].get("month"))
+    print("Oldest Meta publication:", results[-1].get("month"))
+
+    return results
+
+def browser_discover_india_monthly_reports(
     profile_dir: Path,
     hub_cache: Path,
-    processed_urls: set[str],
     headed: bool = True,
-) -> BrowserSyncResult:
-    """Open Meta once, extract the newest India monthly report, and download it."""
+) -> list[dict]:
+    """
+    Open Meta's regulatory transparency page exactly once and
+    return every India Monthly Report edition exposed in the
+    initial server response.
 
-    with sync_playwright() as p:
-        context = _launch_context(p, profile_dir, headed=headed)
+    No PDF is downloaded by this function.
+    """
+
+    with sync_playwright() as playwright:
+        context = _launch_context(
+            playwright,
+            profile_dir,
+            headed=headed,
+        )
 
         try:
-            page = context.pages[0] if context.pages else context.new_page()
+            page = (
+                context.pages[0]
+                if context.pages
+                else context.new_page()
+            )
 
             _reduce_noise(page)
 
-            print("Opening Meta regulatory transparency page once...")
+            print(
+                "Opening Meta regulatory transparency page once..."
+            )
 
             try:
                 response = page.goto(
@@ -270,73 +338,54 @@ def browser_sync_one(
                     wait_until="domcontentloaded",
                     timeout=90_000,
                 )
+
             except PlaywrightError as exc:
                 raise BrowserFetchError(
                     f"Chrome could not open the Meta report hub: {exc}"
                 ) from exc
-
-            status = response.status if response else None
-
-            if status and status >= 400:
-                raise BrowserFetchError(
-                    f"Meta returned HTTP {status} to Chrome automation."
-                )
 
             if response is None:
                 raise BrowserFetchError(
                     "Meta page opened without a readable HTTP response."
                 )
 
-            # IMPORTANT:
-            # Use the original server response, not page.content().
-            # The India report metadata is embedded here.
+            status = response.status
+
+            if status >= 400:
+                raise BrowserFetchError(
+                    f"Meta returned HTTP {status} "
+                    "to Chrome automation."
+                )
+
             try:
                 initial_html = response.text()
+
             except Exception as exc:
                 raise BrowserFetchError(
-                    f"Could not read Meta's initial page response: {exc}"
+                    "Could not read Meta's initial response: "
+                    f"{exc}"
                 ) from exc
 
-            print(f"Initial Meta response length: {len(initial_html)}")
+            print(
+                f"Initial Meta response length: {len(initial_html)}"
+            )
 
-            # Keep a local diagnostic copy.
-            hub_cache.parent.mkdir(parents=True, exist_ok=True)
+            hub_cache.parent.mkdir(
+                parents=True,
+                exist_ok=True,
+            )
+
             hub_cache.write_text(
                 initial_html,
                 encoding="utf-8",
                 errors="ignore",
             )
 
-            latest = _extract_latest_india_monthly_report(initial_html)
-
-            if not latest:
-                print("No India Monthly Report metadata found.")
-                return BrowserSyncResult(
-                    hub_status=status,
-                    candidates=[],
-                )
-
-            url = latest["cdn_url"]
-            month = latest.get("month") or "unknown-month"
-
-            print(f"Newest report: {month}")
-            print("Downloading exactly one report from Meta CDN...")
-
-            data, filename = _download_in_context(
-                context,
-                page,
-                url,
+            editions = _extract_india_monthly_reports(
+                initial_html
             )
 
-            print(f"Downloaded {len(data)} bytes.")
-
-            return BrowserSyncResult(
-                hub_status=status,
-                candidates=[],
-                downloaded_url=url,
-                pdf_bytes=data,
-                filename=filename,
-            )
+            return editions
 
         finally:
             context.close()
