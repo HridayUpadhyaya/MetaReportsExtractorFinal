@@ -25,20 +25,34 @@ def sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-def process_pdf_file(pdf_path: Path, source_url: str | None = None, include_review: bool = False) -> dict:
+def process_pdf_file(
+    pdf_path: Path,
+    source_url: str | None = None,
+    include_review: bool = False,
+    edition_key: str | None = None,
+    edition_meta: dict | None = None,
+) -> dict:
+
     pdf_path = Path(pdf_path).expanduser().resolve()
+
     if not pdf_path.exists():
-        raise FileNotFoundError(f"PDF not found: {pdf_path}")
+        raise FileNotFoundError(
+            f"PDF not found: {pdf_path}"
+        )
 
     data = pdf_path.read_bytes()
+
     if not data.startswith(b"%PDF"):
-        raise RuntimeError(f"File is not a valid PDF: {pdf_path}")
+        raise RuntimeError(
+            f"File is not a valid PDF: {pdf_path}"
+        )
 
     parsed = parse_pdf(
         data,
         title=pdf_path.name,
         source_url=source_url or f"file://{pdf_path}",
     )
+
     result = validate_report(parsed)
 
     audit = {
@@ -48,24 +62,78 @@ def process_pdf_file(pdf_path: Path, source_url: str | None = None, include_revi
         "period_end": parsed.get("period_end"),
         "report_published": parsed.get("report_published"),
         "row_count": len(parsed.get("rows", [])),
-        "validation": {k: v for k, v in result.items() if k != "rows"},
+        "validation": {
+            k: v
+            for k, v in result.items()
+            if k != "rows"
+        },
     }
 
     if not result["ok"] and not include_review:
-        REVIEW.mkdir(parents=True, exist_ok=True)
-        key = parsed.get("period_end") or pdf_path.stem
-        (REVIEW / f"{key}_audit.json").write_text(
-            json.dumps(audit, indent=2), encoding="utf-8"
+        REVIEW.mkdir(
+            parents=True,
+            exist_ok=True,
         )
+
+        key = (
+            parsed.get("period_end")
+            or pdf_path.stem
+        )
+
+        review_file = REVIEW / f"{key}_audit.json"
+
+        review_file.write_text(
+            json.dumps(
+                audit,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+
         raise RuntimeError(
             "Local PDF failed strict validation. "
-            f"Review file: {REVIEW / f'{key}_audit.json'}"
+            f"Review file: {review_file}"
         )
 
     state = load_state(STATE)
-    state["rows"] = merge_rows(state.get("rows", []), result["rows"])
-    state.setdefault("processed", {})[source_url or f"file://{pdf_path}"] = audit
+
+    state["rows"] = merge_rows(
+        state.get("rows", []),
+        result["rows"],
+    )
+
+    source_key = (
+        source_url
+        or f"file://{pdf_path}"
+    )
+
+    state.setdefault(
+        "processed",
+        {},
+    )[source_key] = audit
+
+    if edition_key:
+        meta = edition_meta or {}
+
+        state.setdefault(
+            "processed_editions",
+            {},
+        )[edition_key] = {
+            "publication_month": meta.get("month"),
+            "time_period": meta.get("time_period"),
+            "platform": meta.get("platform"),
+            "language": meta.get("language"),
+            "period_start": audit.get("period_start"),
+            "period_end": audit.get("period_end"),
+            "report_published": audit.get(
+                "report_published"
+            ),
+            "sha256": audit.get("sha256"),
+            "row_count": audit.get("row_count"),
+        }
+
     write_outputs(state)
+
     return audit
 
 
@@ -80,7 +148,13 @@ def write_outputs(state: dict) -> None:
     status = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "rows": len(rows),
-        "reports": len(state.get("processed", {})),
+        "reports": len(
+            {
+                row.get("period_end")
+                for row in rows
+                if row.get("period_end")
+            }
+        ),
         "latest_period_end": max(
             [r.get("period_end") for r in rows if r.get("period_end")],
             default=None,
@@ -103,47 +177,242 @@ def cmd_file(args):
 
 
 def cmd_sync(args):
-    from src.browser_fetch import browser_sync_one
+    from src.browser_fetch import (
+        browser_discover_india_monthly_reports,
+        browser_download_direct,
+    )
 
     profile_dir = ROOT / ".browser_profile"
     hub_cache = CACHE / "meta_hub.html"
 
-    state = load_state(STATE)
-    # Always inspect/download the newest available Meta India report.
-    # process_pdf_file() can decide whether the resulting data changed.
-    processed_urls = set()
+    print(
+        "Opening Meta hub in a browser ONCE. "
+        "No Python requests call will be made to the hub."
+    )
 
-    print("Opening Meta hub in a browser ONCE. No Python requests call will be made to the hub.")
-
-    result = browser_sync_one(
+    editions = browser_discover_india_monthly_reports(
         profile_dir=profile_dir,
         hub_cache=hub_cache,
-        processed_urls=processed_urls,
         headed=False,
     )
 
-    if not result.downloaded_url or not result.pdf_bytes:
-        print("No new India PDF found.")
-        return
+    state = load_state(STATE)
 
-    CACHE.mkdir(parents=True, exist_ok=True)
-
-    filename = result.filename or "meta-india-report.pdf"
-    pdf = CACHE / filename
-    pdf.write_bytes(result.pdf_bytes)
-
-    url = result.downloaded_url
-
-    print(f"Fetched one PDF:\n{url}")
-    print(f"Saved: {pdf}")
-
-    audit = process_pdf_file(
-        pdf,
-        source_url=url,
-        include_review=args.include_review,
+    processed_editions = set(
+        state.get(
+            "processed_editions",
+            {},
+        ).keys()
     )
 
-    print(json.dumps(audit, indent=2))
+    pending = [
+        edition
+        for edition in editions
+        if edition.get("edition_key")
+        not in processed_editions
+    ]
+
+    print()
+    print(
+        f"Meta editions available: {len(editions)}"
+    )
+
+    print(
+        f"Already processed editions: "
+        f"{len(processed_editions)}"
+    )
+
+    print(
+        f"Missing editions: {len(pending)}"
+    )
+
+    if not pending:
+        print(
+            "All available India Monthly Reports "
+            "have already been processed."
+        )
+
+        write_outputs(state)
+        return
+
+    max_new = args.max_new
+
+    if max_new > 0:
+        pending = pending[:max_new]
+
+    print(
+        f"This run will process "
+        f"{len(pending)} report(s)."
+    )
+
+    CACHE.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    completed = 0
+
+    for index, edition in enumerate(
+        pending,
+        start=1,
+    ):
+        edition_key = edition["edition_key"]
+
+        publication_month = (
+            edition.get("month")
+            or "Unknown publication month"
+        )
+
+        time_period = (
+            edition.get("time_period")
+            or "Unknown"
+        )
+
+        url = edition.get("cdn_url")
+
+        print()
+        print(
+            "=" * 70
+        )
+
+        print(
+            f"[{index}/{len(pending)}] "
+            f"Meta publication: {publication_month}"
+        )
+
+        print(
+            f"Meta time period: {time_period}"
+        )
+
+        print(
+            f"Edition key: {edition_key}"
+        )
+
+        print(
+            "=" * 70
+        )
+
+        if not url:
+            print(
+                "Skipping: edition has no CDN URL."
+            )
+            continue
+
+        try:
+            data, filename = browser_download_direct(
+                url=url,
+                profile_dir=profile_dir,
+                headed=False,
+            )
+
+            print(
+                f"Downloaded {len(data)} bytes."
+            )
+
+            pdf = CACHE / filename
+
+            pdf.write_bytes(data)
+
+            print(
+                f"Saved temporary PDF: {pdf}"
+            )
+
+            audit = process_pdf_file(
+                pdf,
+                source_url=url,
+                include_review=args.include_review,
+                edition_key=edition_key,
+                edition_meta=edition,
+            )
+
+            print(
+                "Processed reporting period:"
+            )
+
+            print(
+                "  Start:",
+                audit.get("period_start"),
+            )
+
+            print(
+                "  End:",
+                audit.get("period_end"),
+            )
+
+            print(
+                "  Published:",
+                audit.get("report_published"),
+            )
+
+            completed += 1
+
+        except Exception as exc:
+            print(
+                f"FAILED edition "
+                f"{publication_month}: {exc}"
+            )
+
+            current_state = load_state(STATE)
+
+            current_state.setdefault(
+                "failed",
+                [],
+            ).append(
+                {
+                    "edition_key": edition_key,
+                    "publication_month": publication_month,
+                    "url": url,
+                    "error": str(exc),
+                    "failed_at": datetime.now(
+                        timezone.utc
+                    ).isoformat(),
+                }
+            )
+
+            write_outputs(current_state)
+
+            # If Meta starts rate-limiting us,
+            # stop immediately rather than continuing
+            # to send requests.
+            if "429" in str(exc):
+                print(
+                    "Meta rate limit detected. "
+                    "Stopping this run safely."
+                )
+                break
+
+            continue
+
+    final_state = load_state(STATE)
+
+    write_outputs(final_state)
+
+    remaining = len(
+        [
+            edition
+            for edition in editions
+            if edition.get("edition_key")
+            not in final_state.get(
+                "processed_editions",
+                {},
+            )
+        ]
+    )
+
+    print()
+    print(
+        f"Completed this run: {completed}"
+    )
+
+    print(
+        f"Reports still waiting for backfill: "
+        f"{remaining}"
+    )
+
+    if remaining == 0:
+        print(
+            "FULL HISTORY COMPLETE."
+        )
 
 
 def cmd_direct(args):
@@ -183,7 +452,16 @@ def main():
     sp = ap.add_subparsers(dest="cmd", required=True)
 
     p = sp.add_parser("sync")
-    p.add_argument("--max-new", type=int, default=1, help="Accepted for compatibility; sync fetches at most one PDF.")
+    p.add_argument(
+        "--max-new",
+        type=int,
+        default=5,
+        help=(
+            "Maximum number of missing historical reports "
+            "to process per run. "
+            "Use 0 to process every missing report."
+        ),
+    )
     p.add_argument("--include-review", action="store_true")
     p.set_defaults(func=cmd_sync)
 
