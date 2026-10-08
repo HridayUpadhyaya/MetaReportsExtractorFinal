@@ -120,9 +120,16 @@ def build_workbook(template: Path, output: Path, rows: list[dict], failed_report
         ms.cell(i, 2).number_format = "yyyy-mm-dd"
     ms.freeze_panes = "A2"
 
-    # Trend table: one row per month. Keep the template's two platform-specific charts.
+    # Trend table: one row per month, including Threads when available.
     tc = wb["Trend Charts"]
     trend_styles = [copy(tc.cell(2, c)._style) for c in range(1, 7)]
+    trend_styles.extend([copy(trend_styles[2]), copy(trend_styles[3])])
+    tc.cell(1, 7).value = "Threads: Content Actioned"
+    tc.cell(1, 8).value = "Threads: Grievances Received"
+    for column, source in ((7, 3), (8, 4)):
+        tc.cell(1, column)._style = copy(tc.cell(1, source)._style)
+    tc.column_dimensions["G"].width = tc.column_dimensions["C"].width
+    tc.column_dimensions["H"].width = tc.column_dimensions["D"].width
     tc._charts = []
     if tc.max_row > 1:
         tc.delete_rows(2, tc.max_row - 1)
@@ -130,7 +137,7 @@ def build_workbook(template: Path, output: Path, rows: list[dict], failed_report
     for month, period_end, platform, total, proactive, rate, grievances in summary:
         month_map[(month, period_end)][platform] = (total, grievances)
     for i, ((month, period_end), pmap) in enumerate(sorted(month_map.items(), key=lambda kv: kv[0][1] or ""), start=2):
-        for c in range(1, 7):
+        for c in range(1, 9):
             tc.cell(i,c)._style = copy(trend_styles[c - 1])
         tc.cell(i,1).value = month
         tc.cell(i,2).value = _excel_date(period_end)
@@ -139,22 +146,31 @@ def build_workbook(template: Path, output: Path, rows: list[dict], failed_report
         tc.cell(i,4).value = pmap.get("Facebook", (None,None))[1]
         tc.cell(i,5).value = pmap.get("Instagram", (None,None))[0]
         tc.cell(i,6).value = pmap.get("Instagram", (None,None))[1]
+        tc.cell(i,7).value = pmap.get("Threads", (None,None))[0]
+        tc.cell(i,8).value = pmap.get("Threads", (None,None))[1]
 
     if month_map:
         end = len(month_map) + 1
         cats = Reference(tc, min_col=1, min_row=2, max_row=end)
-        fb = LineChart(); fb.title = "Facebook: Content Actioned (AI) vs Grievances Received"; fb.y_axis.title="Count"; fb.x_axis.title="Month"; fb.height=10; fb.width=20
+        fb = LineChart(); fb.title = "Facebook: Content Actioned vs Grievances Received"; fb.y_axis.title="Count"; fb.x_axis.title="Month"; fb.height=10; fb.width=20
         fb.add_data(Reference(tc, min_col=3, max_col=4, min_row=1, max_row=end), titles_from_data=True)
         if len(fb.series) >= 2:
             fb.series[0].tx = SeriesLabel(v=tc.cell(1,3).value)
             fb.series[1].tx = SeriesLabel(v=tc.cell(1,4).value)
-        fb.set_categories(cats); tc.add_chart(fb, "H1")
-        ig = LineChart(); ig.title = "Instagram: Content Actioned (AI) vs Grievances Received"; ig.y_axis.title="Count"; ig.x_axis.title="Month"; ig.height=10; ig.width=20
+        fb.set_categories(cats); tc.add_chart(fb, "J1")
+        ig = LineChart(); ig.title = "Instagram: Content Actioned vs Grievances Received"; ig.y_axis.title="Count"; ig.x_axis.title="Month"; ig.height=10; ig.width=20
         ig.add_data(Reference(tc, min_col=5, max_col=6, min_row=1, max_row=end), titles_from_data=True)
         if len(ig.series) >= 2:
             ig.series[0].tx = SeriesLabel(v=tc.cell(1,5).value)
             ig.series[1].tx = SeriesLabel(v=tc.cell(1,6).value)
-        ig.set_categories(cats); tc.add_chart(ig, "H26")
+        ig.set_categories(cats); tc.add_chart(ig, "J26")
+        if any("Threads" in pmap for pmap in month_map.values()):
+            threads = LineChart(); threads.title = "Threads: Content Actioned vs Grievances Received"
+            threads.y_axis.title = "Count"; threads.x_axis.title = "Month"; threads.height = 10; threads.width = 20
+            threads.add_data(Reference(tc, min_col=7, max_col=8, min_row=1, max_row=end), titles_from_data=True)
+            for index, series in enumerate(threads.series):
+                series.tx = SeriesLabel(v=tc.cell(1, 7 + index).value)
+            threads.set_categories(cats); tc.add_chart(threads, "J51")
 
     notes = wb["Data Notes"]
     for row_number, height in {1:45, 4:60, 7:45, 14:75, 15:60, 16:60, 18:60, 19:90, 22:90, 25:100}.items():

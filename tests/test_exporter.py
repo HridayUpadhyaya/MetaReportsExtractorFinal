@@ -7,6 +7,20 @@ from src.exporter import build_workbook
 
 
 class WorkbookExportTests(unittest.TestCase):
+    def test_threads_summary_and_native_chart(self):
+        rows = [{"month": "Aug-2026", "period_start": "2026-08-01",
+                 "period_end": "2026-08-31", "report_published": "2026-09-30",
+                 "platform": "Threads", "policy_category": "Spam", "policy_order": 1,
+                 "content_actioned_raw": "500", "content_actioned_numeric": 500,
+                 "proactive_rate": 0.9, "total_user_grievances": 10}]
+        with tempfile.TemporaryDirectory() as folder:
+            output = Path(folder) / "threads.xlsx"
+            build_workbook(Path(__file__).resolve().parents[1] / "template.xlsx", output, rows)
+            workbook = load_workbook(output)
+            self.assertEqual(workbook["Trend Charts"]["G2"].value, 500)
+            self.assertEqual(workbook["Trend Charts"]["H2"].value, 10)
+            self.assertEqual(len(workbook["Trend Charts"]._charts), 3)
+
     def test_expansion_past_template_note_preserves_every_data_row(self):
         rows = [{
             "month": "Apr-2025", "period_start": "2025-04-01",

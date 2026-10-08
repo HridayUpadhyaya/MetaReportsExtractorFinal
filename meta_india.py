@@ -8,6 +8,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from src.exporter import build_workbook
+from src.site_data import public_dataset
 from src.parser import parse_pdf
 from src.state import load_state, save_state, merge_rows
 from src.validate import validate_report
@@ -194,6 +195,10 @@ def write_outputs(state: dict) -> None:
     (ROOT / "docs").mkdir(parents=True, exist_ok=True)
     (ROOT / "docs" / "status.json").write_text(
         json.dumps(status, indent=2), encoding="utf-8"
+    )
+    (ROOT / "docs" / "data.json").write_text(
+        json.dumps(public_dataset(rows, failed, status), ensure_ascii=False, separators=(",", ":")),
+        encoding="utf-8",
     )
     (ROOT / "docs" / "validation_audit.json").write_text(
         json.dumps([

@@ -1,8 +1,55 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Meta India Reports</title>
-<style>body{font-family:system-ui,Segoe UI,Arial;max-width:760px;margin:48px auto;padding:0 20px;line-height:1.5}a.button{display:inline-block;padding:12px 18px;background:#1b5e8f;color:white;text-decoration:none;border-radius:6px}code{background:#f4f4f4;padding:2px 5px}</style></head><body>
-<h1>Meta India Regulatory Transparency Reports</h1>
-<p>This static site hosts the latest validated spreadsheet generated from official Meta India report PDFs.</p>
-<p><a class="button" href="downloads/meta_india_reports_latest.xlsx">Download latest Excel</a></p>
-<p id="status">Loading status…</p>
-<script>fetch('status.json').then(r=>r.json()).then(s=>{document.getElementById('status').textContent=`Latest period: ${s.latest_period_end||'none'} • Reports: ${s.reports} • Rows: ${s.rows} • Generated: ${s.generated_at}`}).catch(()=>{document.getElementById('status').textContent='No generated dataset yet.'});</script>
-</body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Download Meta India transparency report data for your chosen reporting months and platforms. Excel workbooks include policy data, monthly summaries, and charts.">
+  <meta name="theme-color" content="#163d37">
+  <title>Meta India Reports · Spreadsheet Explorer</title>
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/site.css">
+  <script defer src="assets/vendor/fflate-0.8.3.js"></script>
+  <script type="module" src="assets/app.mjs"></script>
+</head>
+<body>
+  <header class="topbar"><a class="brand" href="./"><span class="brand-icon" aria-hidden="true">▤</span> META INDIA <span class="brand-light">/ REPORT EXPLORER</span></a><a class="source-link" href="https://transparency.meta.com/reports/regulatory-transparency-reports/" target="_blank" rel="noopener">Official source ↗</a></header>
+  <main>
+    <section class="intro">
+      <div class="eyebrow"><span class="live-dot"></span> PUBLIC DATA · AUTOMATIC DAILY UPDATES</div>
+      <h1>Your range.<br>Your spreadsheet.</h1>
+      <p class="lede">Explore Meta’s India transparency reports. Choose the reporting months and platforms you need, then download a ready-to-use Excel workbook.</p>
+      <div class="dataset-line" id="dataset-status" role="status">Loading validated report data…</div>
+    </section>
+    <noscript><p class="notice">Enable JavaScript to choose a range. You can also <a href="downloads/meta_india_reports_latest.xlsx">download the full workbook</a>.</p></noscript>
+    <section class="workspace" aria-labelledby="range-heading">
+      <form id="filters" class="filter-panel">
+        <div class="section-number">01 / BUILD YOUR EXPORT</div>
+        <h2 id="range-heading">Choose your data</h2>
+        <p class="muted">Ranges are inclusive and use the month in which the reporting period ends, rather than the PDF publication month.</p>
+        <div class="dates"><label for="start-month">From month<select id="start-month" name="start" disabled></select></label><label for="end-month">To month<select id="end-month" name="end" disabled></select></label></div>
+        <div class="presets" aria-label="Quick ranges"><button type="button" data-range="latest" disabled>Latest month</button><button type="button" data-range="12" disabled>Last 12 months</button><button type="button" data-range="all" disabled>All history</button></div>
+        <fieldset><legend>Platforms</legend><div class="platforms"><label><input type="checkbox" name="platform" value="Facebook" checked disabled> Facebook</label><label><input type="checkbox" name="platform" value="Instagram" checked disabled> Instagram</label><label><input type="checkbox" name="platform" value="Threads" checked disabled> Threads</label></div></fieldset>
+        <p id="range-error" class="form-error" role="alert" hidden></p>
+        <button class="download-button" id="download" type="submit" disabled><span>Download Excel</span><span aria-hidden="true">↓</span></button>
+        <p class="export-caption">.xlsx · 4 tabs · summaries & charts included</p>
+        <p id="download-status" class="download-status" role="status" aria-live="polite"></p>
+        <a class="all-download" href="downloads/meta_india_reports_latest.xlsx" download>Or download the complete dataset ↗</a>
+      </form>
+      <section class="preview-panel" aria-labelledby="preview-heading">
+        <div class="preview-header"><div><div class="section-number">02 / SELECTION PREVIEW</div><h2 id="preview-heading">What’s in your export</h2></div><span class="file-badge">XLSX</span></div>
+        <p id="selection-label" class="muted">Your selected reporting range will appear here.</p>
+        <div class="metrics"><div><strong id="period-count">—</strong><span>reporting periods</span></div><div><strong id="row-count">—</strong><span>policy rows</span></div><div><strong id="platform-count">—</strong><span>platforms with data</span></div></div>
+        <div class="chart-label"><h3>Content actioned by month</h3><span>Published counts*</span></div>
+        <div id="trend" class="trend" aria-live="polite"><p class="muted">Loading preview…</p></div>
+        <div id="coverage" class="coverage" aria-live="polite"></div>
+        <div class="table-wrap"><table><caption class="sr-only">Monthly platform summary of your selected data</caption><thead><tr><th scope="col">Reporting month</th><th scope="col">Platform</th><th scope="col" class="numeric">Content actioned*</th><th scope="col" class="numeric">Grievances</th></tr></thead><tbody id="summary-body"></tbody></table></div>
+        <button type="button" id="show-more" class="show-more" hidden>Show all summary rows</button>
+        <p class="table-note">A dash means Meta did not publish a grievance total for that period. Grievances are counted once per platform and reporting period.</p>
+      </section>
+    </section>
+    <section class="details" aria-label="About this dataset"><article><span class="detail-icon" aria-hidden="true">✓</span><h3>Validated at the source</h3><p>Only reports that pass strict parser checks enter this dataset. Unsupported reports stay excluded and are listed below.</p></article><article><span class="detail-icon" aria-hidden="true">↻</span><h3>Updates without your computer</h3><p>GitHub checks Meta’s official report hub daily, around 8:00 AM IST, and publishes newly validated data automatically.</p></article><article><span class="detail-icon" aria-hidden="true">▤</span><h3>The same complete workbook</h3><p>Every export includes Data Notes, Monthly Summary, Trend Charts, and Master Data, with the original dates and number formats.</p></article></section>
+    <details class="methodology"><summary>Data notes & excluded reports <span id="excluded-count"></span></summary><p>*Meta rounds some counts and reports others as bounds such as “&lt;10,000”. Numeric totals use the published threshold; the raw value is preserved in Master Data. Proactive action estimates are derived from the reported count and rate.</p><p>Early 2021 reporting periods can span parts of two months. The workbook preserves their exact start and end dates. Each platform is included only for periods in which it has validated data.</p><p id="source-caveats"></p><ul id="excluded-list"></ul><p><a href="validation_audit.json">View validation audit JSON ↗</a></p></details>
+  </main>
+  <footer><span>Meta India Report Explorer</span><span>Independent data tool · Source: Meta regulatory transparency reports</span><a href="https://github.com/HridayUpadhyaya/MetaReportsExtractorFinal" target="_blank" rel="noopener">View on GitHub ↗</a></footer>
+</body>
+</html>

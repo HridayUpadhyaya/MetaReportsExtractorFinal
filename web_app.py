@@ -4,6 +4,8 @@ import sys
 from pathlib import Path
 from fastapi import FastAPI, Form
 from fastapi.responses import HTMLResponse, FileResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
+from html import escape
 
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT / "output" / "meta_india_reports_latest.xlsx"
@@ -18,10 +20,10 @@ def page(message: str = "") -> str:
 <p><b>Browser-safe mode:</b> Sync opens the Meta hub once in Chrome instead of Python requests, then fetches at most 15 new PDFs. No URL guessing, no HEAD probes, no retries.</p>
 <h2>Automatic discovery</h2><form method="post" action="/sync"><button>Open Meta once in Chrome + sync up to 15 PDFs</button></form>
 <h2>Known direct PDF URL</h2><form method="post" action="/direct"><input name="pdf_url" placeholder="Paste the official direct .pdf URL"><button>Download + parse this PDF</button></form>
-{link}<pre>{message}</pre></body></html>'''
+{link}<pre>{escape(message)}</pre></body></html>'''
 
-@app.get("/", response_class=HTMLResponse)
-def home(): return page()
+@app.get("/extractor", response_class=HTMLResponse)
+def extractor(): return page()
 
 @app.post("/sync", response_class=HTMLResponse)
 def sync():
@@ -38,6 +40,8 @@ def download():
     if not OUT.exists():
         return RedirectResponse("/")
     return FileResponse(OUT, filename="meta_india_reports_latest.xlsx")
+
+app.mount("/", StaticFiles(directory=ROOT / "docs", html=True), name="website")
 
 if __name__ == "__main__":
     import uvicorn

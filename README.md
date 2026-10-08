@@ -67,12 +67,27 @@ For maximum accuracy and minimal load, process already-downloaded historical PDF
 
 Repeat for each historical PDF. The script merges validated rows into `data/state.json` and regenerates the same Excel file each time.
 
-## Free public website
+## Public spreadsheet explorer
 
-GitHub Pages can host `docs/` for free, but Pages cannot run Python. Because Meta has rate-limited cloud runners, the reliable free architecture is:
+Live site: https://hridayupadhyaya.github.io/MetaReportsExtractorFinal/
 
-- extraction runs on your Windows PC;
-- `publish_to_github.ps1` pushes only `state.json`, `status.json`, and the generated XLSX;
-- GitHub Pages serves the static site and spreadsheet.
+Select inclusive **reporting months** and Facebook, Instagram, and/or Threads. The preview shows matching periods, policy rows, totals, and missing coverage. Download a custom `.xlsx` containing the same four tabs, styles, dates, and native Excel charts as the complete workbook. The range uses the month in which a reporting period ends; PDF publication dates remain in Master Data. Early irregular periods retain their exact dates.
 
-You can schedule `publish_to_github.ps1` weekly using Windows Task Scheduler.
+Custom exports run entirely in the visitor's browser, copying original validated cells from the published workbook. The pinned, MIT-licensed fflate 0.8.3 library is served locally; no CDN or external spreadsheet service is required. `docs/data.json` contains only public report fields and workbook row indexes. Dataset/workbook mismatches stop the export and ask the visitor to reload.
+
+`run_web.bat` serves the same site locally at `http://127.0.0.1:8000/`. The local manual extraction controls are available at `/extractor`.
+
+## Automatic updates and deployment
+
+`Meta Reports Auto Sync` runs on GitHub Actions daily at **02:30 UTC (08:00 IST)**, or manually through Actions. GitHub may delay scheduled jobs. It discovers the official Meta hub once and processes up to **15** missing PDFs per run, keeping strict validation enabled. Successful rows update the workbook, preview dataset, status, and validation audit. Unsupported reports remain excluded; rate limiting or source format changes can delay ingestion.
+
+`Deploy Report Explorer` publishes `docs/` through the GitHub Pages Actions deployment API after every sync completion and on website changes pushed to `main`. Its `workflow_run` trigger handles automated commits made with `GITHUB_TOKEN`, which do not trigger another push workflow. A failed sync still republishes the last committed validated dataset and audits. Your PC does not need to stay on.
+
+The repository's Pages source must be **GitHub Actions**. The deploy workflow checks out the latest `main`, tests the public dataset, uploads a Pages artifact, and deploys it to the `github-pages` environment. Only the official PDF extractor needs Python; the public site is static.
+
+Checks before publishing:
+
+```powershell
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+node --test tests/test_site.mjs
+```
