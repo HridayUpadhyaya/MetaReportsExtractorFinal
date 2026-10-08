@@ -34099,7 +34099,7 @@
     {
       "edition_key": "2021|Nov 2021||",
       "publication_month": "Nov 2021",
-      "url": "https://scontent-atl3-2.xx.fbcdn.net/m1/v/t0.84174-6/An_DKPlikOpd5HswFKr49BMBbJL2EXbzt4QNeVisB8WHsDUoIcid8xcrGonKimPEEQsIGb0E-U0kr8jxl-sqEmohBs9VLNq9Hfa5WSF8mTJdsOG_0VhDtGFXx_GPRi7kD2c_nLQ?_nc_gid=Tz7JJIaOhTH9-wmufTX9gQ&_nc_oc=Adoh3pgfRCHXEtC2o__YhrKt2fWV82Ylm9BXldqzg-kLKMrevwqmUiO95B_aO1-7c8Q&ccb=10-5&oh=00_AQPUPooXcSDD_RrlGCTzvT2yq6RRMcOjgEmkaHKIRNqyug&oe=6AC99332&_nc_sid=68f2c3",
+      "url": "https://scontent-sjc6-1.xx.fbcdn.net/m1/v/t0.84174-6/An_DKPlikOpd5HswFKr49BMBbJL2EXbzt4QNeVisB8WHsDUoIcid8xcrGonKimPEEQsIGb0E-U0kr8jxl-sqEmohBs9VLNq9Hfa5WSF8mTJdsOG_0VhDtGFXx_GPRi7kD2c_nLQ?_nc_gid=IjMXvXc01c9sSnSaItLkpw&_nc_oc=AdpO0vz2Jsw_9GA-A95FkDYyTGeMFVYvsM9NUAMP03xDLL3lRCW7OvqJtS6C2TYiaLQ&ccb=10-5&oh=00_AQPxPnwfZGriNixX9ljiATpDGJ5EhRgHiqk4-Hll4FRWWA&oe=6AC9CB72&_nc_sid=68f2c3",
       "error": "Local PDF failed strict validation. Review file: /home/runner/work/MetaReportsExtractorFinal/MetaReportsExtractorFinal/review/2021-11-30_audit.json",
       "audit": {
         "filename": "An_DKPlikOpd5HswFKr49BMBbJL2EXbzt4QNeVisB8WHsDUoIcid8xcrGonKimPEEQsIGb0E-U0kr8jxl-sqEmohBs9VLNq9Hfa5WSF8mTJdsOG_0VhDtGFXx_GPRi7kD2c_nLQ.pdf",
@@ -34327,12 +34327,12 @@
           }
         ]
       },
-      "failed_at": "2026-10-08T17:12:23.987736+00:00"
+      "failed_at": "2026-10-08T17:39:18.904227+00:00"
     },
     {
       "edition_key": "2021|Oct 2021||",
       "publication_month": "Oct 2021",
-      "url": "https://scontent-atl3-2.xx.fbcdn.net/m1/v/t0.84174-6/An_Cno0HEGs1BTockRpqvYYsmWNtokPqN43Rl92V_YhfTLr7KnGJga6-vyHzKY-FuifELHPd_Js2S_W57VMXyDRuEzB2BhqvstCaEkBpGTwk2p3GhXQO52dsVzCzYVMgem-1NQ?_nc_gid=Tz7JJIaOhTH9-wmufTX9gQ&_nc_oc=Adqup9wuosPu2LQVXgeSpLSkRM5Jd9E4XBhAo2nPH_jd5R0RNp5U8A7_i_udVm9ZJhA&ccb=10-5&oh=00_AQOGLIEjJXltDNFkbdGgMkjFKwTSjQcauHCpjKx8EQlVGA&oe=6AC99B1B&_nc_sid=68f2c3",
+      "url": "https://scontent-sjc6-1.xx.fbcdn.net/m1/v/t0.84174-6/An_Cno0HEGs1BTockRpqvYYsmWNtokPqN43Rl92V_YhfTLr7KnGJga6-vyHzKY-FuifELHPd_Js2S_W57VMXyDRuEzB2BhqvstCaEkBpGTwk2p3GhXQO52dsVzCzYVMgem-1NQ?_nc_gid=IjMXvXc01c9sSnSaItLkpw&_nc_oc=Adr04Tcshe9EQvieAghn2NTQbSdGGHbjVoLhbPCziunn49qkJ1tMilK6A6-RWoymr0U&ccb=10-5&oh=00_AQPPEDko0AVdJJOTRUNcgTKW2ANwl_CwRapL8IE3aUr6ew&oe=6AC99B1B&_nc_sid=68f2c3",
       "error": "Local PDF failed strict validation. Review file: /home/runner/work/MetaReportsExtractorFinal/MetaReportsExtractorFinal/review/2021-10-31_audit.json",
       "audit": {
         "filename": "An_Cno0HEGs1BTockRpqvYYsmWNtokPqN43Rl92V_YhfTLr7KnGJga6-vyHzKY-FuifELHPd_Js2S_W57VMXyDRuEzB2BhqvstCaEkBpGTwk2p3GhXQO52dsVzCzYVMgem-1NQ.pdf",
@@ -34560,12 +34560,12 @@
           }
         ]
       },
-      "failed_at": "2026-10-08T17:12:26.872880+00:00"
+      "failed_at": "2026-10-08T17:39:20.994886+00:00"
     },
     {
       "edition_key": "2021|Jun 2021 (part 2)||",
       "publication_month": "Jun 2021 (part 2)",
-      "url": "https://scontent-atl3-2.xx.fbcdn.net/m1/v/t0.84174-6/An99Xl7rBoxiYBviG-ByO85V6PXgohQHjjSIQ9STxytQfeDP_1FHZTMTqH8b6HaCYie7TA4k2fJMgliOcL8vJQiGOI99JJfIP9i8WgAca8m4wfowlb4OXVZYI3Ber2KSnzaYuw?_nc_gid=Tz7JJIaOhTH9-wmufTX9gQ&_nc_oc=AdoCs-paSqzB0aQGnJ13O2igwWquzLZKj5B_MIXWDyg82H2vfc1vZOQNZTSTW_xruJs&ccb=10-5&oh=00_AQOuX02zW0pXshTc5srT6o8ooP7ZfNvqlkcTc6oJle7_Qw&oe=6AC9C100&_nc_sid=68f2c3",
+      "url": "https://scontent-sjc6-1.xx.fbcdn.net/m1/v/t0.84174-6/An99Xl7rBoxiYBviG-ByO85V6PXgohQHjjSIQ9STxytQfeDP_1FHZTMTqH8b6HaCYie7TA4k2fJMgliOcL8vJQiGOI99JJfIP9i8WgAca8m4wfowlb4OXVZYI3Ber2KSnzaYuw?_nc_gid=IjMXvXc01c9sSnSaItLkpw&_nc_oc=AdrvBXkTwBn0l28Ke2iL6MOAKv7PIx_5qdXsx2Sg3IF1XUXExC8Kw9JLK2euPVtcnZ8&ccb=10-5&oh=00_AQM9tiMFilHhXS5YnRhbdzGVL9UrWBBcQkRVyDf8xn63iQ&oe=6AC9C100&_nc_sid=68f2c3",
       "error": "Local PDF failed strict validation. Review file: /home/runner/work/MetaReportsExtractorFinal/MetaReportsExtractorFinal/review/An99Xl7rBoxiYBviG-ByO85V6PXgohQHjjSIQ9STxytQfeDP_1FHZTMTqH8b6HaCYie7TA4k2fJMgliOcL8vJQiGOI99JJfIP9i8WgAca8m4wfowlb4OXVZYI3Ber2KSnzaYuw_audit.json",
       "audit": {
         "filename": "An99Xl7rBoxiYBviG-ByO85V6PXgohQHjjSIQ9STxytQfeDP_1FHZTMTqH8b6HaCYie7TA4k2fJMgliOcL8vJQiGOI99JJfIP9i8WgAca8m4wfowlb4OXVZYI3Ber2KSnzaYuw.pdf",
@@ -34589,7 +34589,7 @@
         },
         "row_issues": []
       },
-      "failed_at": "2026-10-08T17:12:28.692404+00:00"
+      "failed_at": "2026-10-08T17:39:22.682271+00:00"
     }
   ],
   "processed_editions": {
