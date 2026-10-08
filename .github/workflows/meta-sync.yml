@@ -39,7 +39,7 @@ jobs:
         id: extractor
         continue-on-error: true
         run: |
-          python meta_india.py sync
+          python meta_india.py sync --max-new 15
 
       - name: Show validation audit files
         if: always()
