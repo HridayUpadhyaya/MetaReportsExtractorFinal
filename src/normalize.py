@@ -7,16 +7,43 @@ def clean_text(value: str | None) -> str:
 
 
 def parse_number(raw: str) -> float:
+    """Parse Meta's compact counts.
+
+    Supports the formats seen in India reports, including K/M/B and the
+    India-specific L (lakh) column.  Examples: 620.3K, 1.2M, 6.2L, 398.
+    The parser requires the whole useful token rather than silently ignoring
+    an unknown suffix (the old code incorrectly interpreted 6.2L as 6.2).
+    """
     s = clean_text(raw).upper().replace(",", "").strip()
     less_than = s.startswith("<")
     s = s.lstrip("<").strip()
-    m = re.search(r"(-?\d+(?:\.\d+)?)\s*([KMB])?", s)
+
+    # Allow a trailing unit word as well as a one-letter suffix.
+    m = re.fullmatch(
+        r"(-?\d+(?:\.\d+)?)\s*(K|M|B|L|THOUSAND|MILLION|BILLION|LAKH|LAKHS)?\s*",
+        s,
+        re.I,
+    )
     if not m:
         raise ValueError(f"Cannot parse number: {raw!r}")
+
     n = float(m.group(1))
-    mult = {None: 1, "K": 1_000, "M": 1_000_000, "B": 1_000_000_000}[m.group(2)]
+    unit = (m.group(2) or "").upper()
+    mult = {
+        "": 1,
+        "K": 1_000,
+        "THOUSAND": 1_000,
+        "L": 100_000,
+        "LAKH": 100_000,
+        "LAKHS": 100_000,
+        "M": 1_000_000,
+        "MILLION": 1_000_000,
+        "B": 1_000_000_000,
+        "BILLION": 1_000_000_000,
+    }[unit]
     value = n * mult
-    # For '<1 K', preserve the template's conservative convention of 1000.
+
+    # '<1K' is not exact. Keep the project's existing conservative convention.
     if less_than and value == 0:
         value = mult
     return value

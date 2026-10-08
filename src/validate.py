@@ -42,7 +42,9 @@ def validate_report(parsed: dict) -> dict:
         if r.get("policy_category") not in KNOWN_CATEGORIES:
             row_issues[i].append("unknown_policy_category")
 
-    expected = parsed.get("expected_policy_count")
+    expected_counts = parsed.get("expected_policy_counts") or {}
+    legacy_expected = parsed.get("expected_policy_count")
+
     for platform, items in by_platform.items():
         cats = [r["policy_category"] for _, r in items]
         dupes = [c for c, n in Counter(cats).items() if n > 1]
@@ -50,10 +52,19 @@ def validate_report(parsed: dict) -> dict:
             report_issues.append(f"duplicate_categories:{platform}:{'|'.join(dupes)}")
         if len(items) < 7 or len(items) > 20:
             report_issues.append(f"implausible_policy_row_count:{platform}:{len(items)}")
+
+        expected = expected_counts.get(platform)
+        if expected is None and not expected_counts:
+            expected = legacy_expected
         if expected is not None and len(items) != expected:
             report_issues.append(f"expected_{expected}_policy_rows:{platform}:found_{len(items)}")
 
-    # If a report explicitly declares one policy count, every content table should match it.
+    # If the prose explicitly names a platform and count but no rows were
+    # extracted for it, catch that too.
+    for platform, expected in expected_counts.items():
+        if platform not in by_platform and expected:
+            report_issues.append(f"missing_platform_table:{platform}:expected_{expected}")
+
     strict_ok = not report_issues and not row_issues
     for i, r in enumerate(rows):
         issues = row_issues.get(i, [])
