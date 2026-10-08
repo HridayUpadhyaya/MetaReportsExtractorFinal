@@ -8828,6 +8828,41 @@
       "url": "https://scontent-iad3-1.xx.fbcdn.net/m1/v/t0.84174-6/An83y9erFhcAK4VGyKKJSIq1mLXuJh1xTvrBkbYCO8AYFbeUk80eN2R5d7vCrdripvOoXcfiKHhyahcOOPt2JfowbfGKNunCjC6F5WIVOLup3CAJc4PiDq7IT8o2RpuP0XbEYXQ?_nc_gid=zdUJWXaNxpOEEeIWyRCbqQ&_nc_oc=AdoPLikIQ_8-Y4o0uSxGLyacXorAKpLNXFoWeuT0yUrESEbSTJBaH2gBO0-4m7zwq_k&ccb=10-5&oh=00_AQNY5KkHdcPTWnT5sg1jUlsV43x656-s1cuN-q9ijLzh2A&oe=6AC930C8&_nc_sid=68f2c3",
       "error": "Local PDF failed strict validation. Review file: /home/runner/work/MetaReportsExtractorFinal/MetaReportsExtractorFinal/review/2025-05-31_audit.json",
       "failed_at": "2026-10-08T09:37:04.262234+00:00"
+    },
+    {
+      "edition_key": "2025|Oct 2025||",
+      "publication_month": "Oct 2025",
+      "url": "https://scontent-ord5-2.xx.fbcdn.net/m1/v/t0.84174-6/An8S9-OqM5YtTUREejN9EnsQUJ6mjze3Qg7VfJiGxoIR8gRWbIiX3WLYeiOzYoNCdX2p8f6faTrO_8fq0jqtR93-XSyyHVPDlMB2YOIA6zzWCrQrywpaAJBzD5S-Ji_V11RWpio?_nc_gid=buoKVsGSE8MgFwr41KnDgA&_nc_oc=Adq5MxrKYjHaVf5fXT9gjO_X30a_evrcYehLPccjsSE50idQcgt-_EYOXiwcC-DhNR0&ccb=10-5&oh=00_AQMNNWJLabs4hk5-8cLbaPgpMvvRWx579JNZTEmx3BM6Xg&oe=6AC95F34&_nc_sid=68f2c3",
+      "error": "Local PDF failed strict validation. Review file: /home/runner/work/MetaReportsExtractorFinal/MetaReportsExtractorFinal/review/2025-09-30_audit.json",
+      "failed_at": "2026-10-08T09:43:01.852543+00:00"
+    },
+    {
+      "edition_key": "2025|Sep 2025||",
+      "publication_month": "Sep 2025",
+      "url": "https://scontent-ord5-2.xx.fbcdn.net/m1/v/t0.84174-6/An8zZ5ua7c5bM5Rn1i6WcH2-OA12-CUq5F4yshAc4SFHKwlgoXX_U6aH2bSarpERniO8w3Hcsgg1ZxZdXoGnqxzjAo8rFIkcadkOIXOIaN-riWDFWzhfzUWKEvcWe3qrYAFP_LA?_nc_gid=buoKVsGSE8MgFwr41KnDgA&_nc_oc=AdpEMwRmd_MGIwmhAAVzQnpdmtd1BmHjb-ZCEq-CMOfFdK7QXFh4opPgeyl7SASN0sc&ccb=10-5&oh=00_AQPFUIXWJXxuNGVIoMkOISx9KXC9T9DG7QlUz_I7fL1wiw&oe=6AC952C9&_nc_sid=68f2c3",
+      "error": "Local PDF failed strict validation. Review file: /home/runner/work/MetaReportsExtractorFinal/MetaReportsExtractorFinal/review/2025-08-31_audit.json",
+      "failed_at": "2026-10-08T09:43:03.766822+00:00"
+    },
+    {
+      "edition_key": "2025|Aug 2025||",
+      "publication_month": "Aug 2025",
+      "url": "https://scontent-ord5-2.xx.fbcdn.net/m1/v/t0.84174-6/An_myoVJe0pXwJnbY3ZM4F9g23oyHd98pTBv2X7-rMZrwHi09hp5A8WOtsTEZDr58EcZeSwoigysgIBoQI17H79N192bQudH98wCfOAkCxzkKRxR7YCazNNruev02uZz7NyFGA?_nc_gid=buoKVsGSE8MgFwr41KnDgA&_nc_oc=AdogHKSc3Or1btBxo96WvduED_TqNfjJ5ocUtgNmQBj-1aWaXlQCtVS33eE9HgVfGaE&ccb=10-5&oh=00_AQPBuAhGbJmTFV638HOLCISzb87eZm-4DQDgBpXMG4bv-Q&oe=6AC937EF&_nc_sid=68f2c3",
+      "error": "Local PDF failed strict validation. Review file: /home/runner/work/MetaReportsExtractorFinal/MetaReportsExtractorFinal/review/2025-07-31_audit.json",
+      "failed_at": "2026-10-08T09:43:06.121583+00:00"
+    },
+    {
+      "edition_key": "2025|Jul 2025||",
+      "publication_month": "Jul 2025",
+      "url": "https://scontent-ord5-2.xx.fbcdn.net/m1/v/t0.84174-6/An91kOko6vfv7HbSSr32QioO1nGyhFhViTw2vCBzfgLxXgMPZt07e5EDzFr0GsHg-nkXmAeYfFguUxZHALyCqxaJWK30_sSLgIT6Wc1t0Nafqk68PBnuT8gs2MZm-bk9zvJqDRw?_nc_gid=buoKVsGSE8MgFwr41KnDgA&_nc_oc=Adpum9a_IqXkKxOMIg-9lJWHxCpEXU_u3l7gFEjN8MXFq7G3tMb5beJ0KTcNDRBtmos&ccb=10-5&oh=00_AQOr3vf_PmNTR1t__wrv1B63efwcsyPZ2M48b9eyz2Mm0g&oe=6AC93C63&_nc_sid=68f2c3",
+      "error": "Local PDF failed strict validation. Review file: /home/runner/work/MetaReportsExtractorFinal/MetaReportsExtractorFinal/review/2025-06-30_audit.json",
+      "failed_at": "2026-10-08T09:43:07.984732+00:00"
+    },
+    {
+      "edition_key": "2025|Jun 2025||",
+      "publication_month": "Jun 2025",
+      "url": "https://scontent-ord5-2.xx.fbcdn.net/m1/v/t0.84174-6/An83y9erFhcAK4VGyKKJSIq1mLXuJh1xTvrBkbYCO8AYFbeUk80eN2R5d7vCrdripvOoXcfiKHhyahcOOPt2JfowbfGKNunCjC6F5WIVOLup3CAJc4PiDq7IT8o2RpuP0XbEYXQ?_nc_gid=buoKVsGSE8MgFwr41KnDgA&_nc_oc=AdrglqsynzMZInZj-1OjD45ZXb5Qa_8YiFRgVk21sg5sBTzAiT5bK6KmqllEL5vG6h0&ccb=10-5&oh=00_AQPbTJCXjntSwbCuadlGqDOSjijUlhenUzo9CadKP260yg&oe=6AC930C8&_nc_sid=68f2c3",
+      "error": "Local PDF failed strict validation. Review file: /home/runner/work/MetaReportsExtractorFinal/MetaReportsExtractorFinal/review/2025-05-31_audit.json",
+      "failed_at": "2026-10-08T09:43:09.749674+00:00"
     }
   ],
   "processed_editions": {
