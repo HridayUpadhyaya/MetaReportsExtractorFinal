@@ -34099,15 +34099,22 @@
     {
       "edition_key": "2021|Nov 2021||",
       "publication_month": "Nov 2021",
-      "url": "https://scontent.fbom3-2.fna.fbcdn.net/m1/v/t0.84174-6/An_DKPlikOpd5HswFKr49BMBbJL2EXbzt4QNeVisB8WHsDUoIcid8xcrGonKimPEEQsIGb0E-U0kr8jxl-sqEmohBs9VLNq9Hfa5WSF8mTJdsOG_0VhDtGFXx_GPRi7kD2c_nLQ?_nc_gid=gi9CEC8-7ONHNUANzVKxwg&_nc_oc=AdoAcpD9RHB0aPkyaVWXxJ1O_BMXuYD_rw7fo0Bn_stvaFAM2b90YX7cABcPhOfciv8&ccb=10-5&oh=00_AQNn45jv9BzD5VEETlAUeE5qKPTIF3CArO8_MlD3_kE1tg&oe=6AC99332&_nc_sid=68f2c3",
-      "error": "Local PDF failed strict validation. Review file: C:\\Users\\Nishant Upadhyaya\\Downloads\\META_INDIA_COMPLETE_FIXED_PROJECT\\meta_india_FINAL\\review\\2021-11-30_audit.json",
-      "failed_at": "2026-10-08T16:53:57.564756+00:00",
+      "url": "https://scontent-atl3-2.xx.fbcdn.net/m1/v/t0.84174-6/An_DKPlikOpd5HswFKr49BMBbJL2EXbzt4QNeVisB8WHsDUoIcid8xcrGonKimPEEQsIGb0E-U0kr8jxl-sqEmohBs9VLNq9Hfa5WSF8mTJdsOG_0VhDtGFXx_GPRi7kD2c_nLQ?_nc_gid=Tz7JJIaOhTH9-wmufTX9gQ&_nc_oc=Adoh3pgfRCHXEtC2o__YhrKt2fWV82Ylm9BXldqzg-kLKMrevwqmUiO95B_aO1-7c8Q&ccb=10-5&oh=00_AQPUPooXcSDD_RrlGCTzvT2yq6RRMcOjgEmkaHKIRNqyug&oe=6AC99332&_nc_sid=68f2c3",
+      "error": "Local PDF failed strict validation. Review file: /home/runner/work/MetaReportsExtractorFinal/MetaReportsExtractorFinal/review/2021-11-30_audit.json",
       "audit": {
         "filename": "An_DKPlikOpd5HswFKr49BMBbJL2EXbzt4QNeVisB8WHsDUoIcid8xcrGonKimPEEQsIGb0E-U0kr8jxl-sqEmohBs9VLNq9Hfa5WSF8mTJdsOG_0VhDtGFXx_GPRi7kD2c_nLQ.pdf",
         "sha256": "640520ccf0ca5ef618da3cb349b129ba917c80a396ea111a4ec9c6fb1b6274cf",
         "period_start": "2021-11-01",
         "period_end": "2021-11-30",
         "report_published": "2021-12-30",
+        "grievances": {
+          "Facebook": 519,
+          "Instagram": 424
+        },
+        "expected_policy_counts": {
+          "Facebook": 10,
+          "Instagram": 9
+        },
         "row_count": 25,
         "validation": {
           "ok": false,
@@ -34319,20 +34326,28 @@
             ]
           }
         ]
-      }
+      },
+      "failed_at": "2026-10-08T17:12:23.987736+00:00"
     },
     {
       "edition_key": "2021|Oct 2021||",
       "publication_month": "Oct 2021",
-      "url": "https://scontent.fbom3-2.fna.fbcdn.net/m1/v/t0.84174-6/An_Cno0HEGs1BTockRpqvYYsmWNtokPqN43Rl92V_YhfTLr7KnGJga6-vyHzKY-FuifELHPd_Js2S_W57VMXyDRuEzB2BhqvstCaEkBpGTwk2p3GhXQO52dsVzCzYVMgem-1NQ?_nc_gid=gi9CEC8-7ONHNUANzVKxwg&_nc_oc=AdrHCi-JiQ0RreB1yb28I6hW39jXAn4F0L8B51ax2TMeb3Gqm6aCII6cYSmaEXdCbRc&ccb=10-5&oh=00_AQPqBIdyez2mI6sVZQ0mmxraC15Adhy3YohAX_92aYtVew&oe=6AC99B1B&_nc_sid=68f2c3",
-      "error": "Local PDF failed strict validation. Review file: C:\\Users\\Nishant Upadhyaya\\Downloads\\META_INDIA_COMPLETE_FIXED_PROJECT\\meta_india_FINAL\\review\\2021-10-31_audit.json",
-      "failed_at": "2026-10-08T16:54:00.685032+00:00",
+      "url": "https://scontent-atl3-2.xx.fbcdn.net/m1/v/t0.84174-6/An_Cno0HEGs1BTockRpqvYYsmWNtokPqN43Rl92V_YhfTLr7KnGJga6-vyHzKY-FuifELHPd_Js2S_W57VMXyDRuEzB2BhqvstCaEkBpGTwk2p3GhXQO52dsVzCzYVMgem-1NQ?_nc_gid=Tz7JJIaOhTH9-wmufTX9gQ&_nc_oc=Adqup9wuosPu2LQVXgeSpLSkRM5Jd9E4XBhAo2nPH_jd5R0RNp5U8A7_i_udVm9ZJhA&ccb=10-5&oh=00_AQOGLIEjJXltDNFkbdGgMkjFKwTSjQcauHCpjKx8EQlVGA&oe=6AC99B1B&_nc_sid=68f2c3",
+      "error": "Local PDF failed strict validation. Review file: /home/runner/work/MetaReportsExtractorFinal/MetaReportsExtractorFinal/review/2021-10-31_audit.json",
       "audit": {
         "filename": "An_Cno0HEGs1BTockRpqvYYsmWNtokPqN43Rl92V_YhfTLr7KnGJga6-vyHzKY-FuifELHPd_Js2S_W57VMXyDRuEzB2BhqvstCaEkBpGTwk2p3GhXQO52dsVzCzYVMgem-1NQ.pdf",
         "sha256": "6e3d519dae5183570fbbb183b1aba765063e72a332d56b13b2427745f891a98f",
         "period_start": "2021-10-01",
         "period_end": "2021-10-31",
         "report_published": "2021-12-01",
+        "grievances": {
+          "Facebook": 686,
+          "Instagram": 652
+        },
+        "expected_policy_counts": {
+          "Facebook": 10,
+          "Instagram": 9
+        },
         "row_count": 25,
         "validation": {
           "ok": false,
@@ -34544,20 +34559,25 @@
             ]
           }
         ]
-      }
+      },
+      "failed_at": "2026-10-08T17:12:26.872880+00:00"
     },
     {
       "edition_key": "2021|Jun 2021 (part 2)||",
       "publication_month": "Jun 2021 (part 2)",
-      "url": "https://scontent.fbom3-2.fna.fbcdn.net/m1/v/t0.84174-6/An99Xl7rBoxiYBviG-ByO85V6PXgohQHjjSIQ9STxytQfeDP_1FHZTMTqH8b6HaCYie7TA4k2fJMgliOcL8vJQiGOI99JJfIP9i8WgAca8m4wfowlb4OXVZYI3Ber2KSnzaYuw?_nc_gid=gi9CEC8-7ONHNUANzVKxwg&_nc_oc=AdpzONLo_n91EU2WHr2vMuN_4atlz-X3qlFDjTPPp1c_BmtYdTLzQLVWvTli6WBIRqY&ccb=10-5&oh=00_AQOfL5KXgqCbKEYwfY7qLzEXO2VNiav1nAAmfk9Ejg26Ew&oe=6AC9C100&_nc_sid=68f2c3",
-      "error": "Local PDF failed strict validation. Review file: C:\\Users\\Nishant Upadhyaya\\Downloads\\META_INDIA_COMPLETE_FIXED_PROJECT\\meta_india_FINAL\\review\\An99Xl7rBoxiYBviG-ByO85V6PXgohQHjjSIQ9STxytQfeDP_1FHZTMTqH8b6HaCYie7TA4k2fJMgliOcL8vJQiGOI99JJfIP9i8WgAca8m4wfowlb4OXVZYI3Ber2KSnzaYuw_audit.json",
-      "failed_at": "2026-10-08T16:54:12.418718+00:00",
+      "url": "https://scontent-atl3-2.xx.fbcdn.net/m1/v/t0.84174-6/An99Xl7rBoxiYBviG-ByO85V6PXgohQHjjSIQ9STxytQfeDP_1FHZTMTqH8b6HaCYie7TA4k2fJMgliOcL8vJQiGOI99JJfIP9i8WgAca8m4wfowlb4OXVZYI3Ber2KSnzaYuw?_nc_gid=Tz7JJIaOhTH9-wmufTX9gQ&_nc_oc=AdoCs-paSqzB0aQGnJ13O2igwWquzLZKj5B_MIXWDyg82H2vfc1vZOQNZTSTW_xruJs&ccb=10-5&oh=00_AQOuX02zW0pXshTc5srT6o8ooP7ZfNvqlkcTc6oJle7_Qw&oe=6AC9C100&_nc_sid=68f2c3",
+      "error": "Local PDF failed strict validation. Review file: /home/runner/work/MetaReportsExtractorFinal/MetaReportsExtractorFinal/review/An99Xl7rBoxiYBviG-ByO85V6PXgohQHjjSIQ9STxytQfeDP_1FHZTMTqH8b6HaCYie7TA4k2fJMgliOcL8vJQiGOI99JJfIP9i8WgAca8m4wfowlb4OXVZYI3Ber2KSnzaYuw_audit.json",
       "audit": {
         "filename": "An99Xl7rBoxiYBviG-ByO85V6PXgohQHjjSIQ9STxytQfeDP_1FHZTMTqH8b6HaCYie7TA4k2fJMgliOcL8vJQiGOI99JJfIP9i8WgAca8m4wfowlb4OXVZYI3Ber2KSnzaYuw.pdf",
         "sha256": "5a1b4fd25b9896a1b23370622eb783fc716c09a82a7c7be9fead25c3970126da",
         "period_start": null,
         "period_end": null,
         "report_published": "2021-07-15",
+        "grievances": {
+          "Facebook": 646,
+          "Instagram": 36
+        },
+        "expected_policy_counts": {},
         "row_count": 0,
         "validation": {
           "ok": false,
@@ -34568,7 +34588,8 @@
           "row_issue_count": 0
         },
         "row_issues": []
-      }
+      },
+      "failed_at": "2026-10-08T17:12:28.692404+00:00"
     }
   ],
   "processed_editions": {

@@ -8,6 +8,14 @@
       "period_start": "2021-11-01",
       "period_end": "2021-11-30",
       "report_published": "2021-12-30",
+      "grievances": {
+        "Facebook": 519,
+        "Instagram": 424
+      },
+      "expected_policy_counts": {
+        "Facebook": 10,
+        "Instagram": 9
+      },
       "row_count": 25,
       "validation": {
         "ok": false,
@@ -231,6 +239,14 @@
       "period_start": "2021-10-01",
       "period_end": "2021-10-31",
       "report_published": "2021-12-01",
+      "grievances": {
+        "Facebook": 686,
+        "Instagram": 652
+      },
+      "expected_policy_counts": {
+        "Facebook": 10,
+        "Instagram": 9
+      },
       "row_count": 25,
       "validation": {
         "ok": false,
@@ -454,6 +470,11 @@
       "period_start": null,
       "period_end": null,
       "report_published": "2021-07-15",
+      "grievances": {
+        "Facebook": 646,
+        "Instagram": 36
+      },
+      "expected_policy_counts": {},
       "row_count": 0,
       "validation": {
         "ok": false,
