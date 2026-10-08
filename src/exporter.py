@@ -62,6 +62,10 @@ def build_workbook(template: Path, output: Path, rows: list[dict], failed_report
     wb = load_workbook(template)
 
     md = wb["Master Data"]
+    # The template's old note can sit inside the expanded data range. Unmerge
+    # it before adding rows or Excel will discard that row's other cells.
+    for merged_range in list(md.merged_cells.ranges):
+        md.unmerge_cells(str(merged_range))
     style_row = 2
     styles = [copy(md.cell(style_row, c)._style) for c in range(1, 12)]
     formats = [md.cell(style_row, c).number_format for c in range(1, 12)]
