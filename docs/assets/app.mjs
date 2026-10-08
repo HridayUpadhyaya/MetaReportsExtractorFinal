@@ -3,7 +3,7 @@ import {buildRangeWorkbook} from './workbook.mjs';
 
 const $ = id => document.getElementById(id);
 const format = new Intl.NumberFormat('en-IN', {maximumFractionDigits: 0});
-let dataset, selected = [], summary = [], months = [], showAll = false, busy = false, workbook;
+let dataset, selected = [], summary = [], months = [], showAll = false, busy = false, workbook, downloadURL;
 const selectedPlatforms = () => [...document.querySelectorAll('input[name="platform"]:checked')].map(input => input.value);
 const selection = () => ({start: $('start-month').value, end: $('end-month').value, platforms: selectedPlatforms()});
 
@@ -84,10 +84,10 @@ function applyPreset(range) {
   const end = months.at(-1);
   $('end-month').value = end;
   $('start-month').value = range === 'all' ? months[0] : range === 'latest' ? end : months[Math.max(0, months.length - Number(range))];
-  $('download-status').textContent = ''; refresh();
+  $('download-status').textContent = ''; $('ready-download').hidden = true; refresh();
 }
 
-$('filters').addEventListener('change', () => { $('download-status').textContent = ''; refresh(); });
+$('filters').addEventListener('change', () => { $('download-status').textContent = ''; $('ready-download').hidden = true; refresh(); });
 for (const button of document.querySelectorAll('[data-range]')) button.addEventListener('click', () => applyPreset(button.dataset.range));
 $('show-more').addEventListener('click', () => { showAll = !showAll; renderTable(); });
 $('filters').addEventListener('submit', async event => {
@@ -104,11 +104,12 @@ $('filters').addEventListener('submit', async event => {
     await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     const bytes = buildRangeWorkbook(workbook, rows, dataset.rows, options);
     const blob = new Blob([bytes], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-    const url = URL.createObjectURL(blob); const link = document.createElement('a');
+    if (downloadURL) URL.revokeObjectURL(downloadURL);
+    downloadURL = URL.createObjectURL(blob); const link = $('ready-download');
     const label = options.platforms.length === PLATFORMS.length ? 'all-platforms' : options.platforms.join('-').toLowerCase();
-    link.href = url; link.download = `meta-india_${options.start}_to_${options.end}_${label}.xlsx`;
-    document.body.append(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 60000);
-    $('download-status').textContent = `Download started · ${format.format(rows.length)} policy rows in your workbook.`;
+    link.href = downloadURL; link.download = `meta-india_${options.start}_to_${options.end}_${label}.xlsx`;
+    link.hidden = false; link.click();
+    $('download-status').textContent = `Workbook ready · ${format.format(rows.length)} policy rows. Use the save link if your download hasn't started.`;
   } catch (error) {
     $('download-status').textContent = error.message || 'Export failed. Please reload and try again.';
     workbook = null;
