@@ -9,13 +9,20 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: meta-reports-sync
+  cancel-in-progress: false
+
 jobs:
   sync:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -29,19 +36,95 @@ jobs:
           python -m playwright install --with-deps chromium
 
       - name: Run Meta extractor
+        id: extractor
+        continue-on-error: true
         run: |
           python meta_india.py sync
 
+      - name: Show validation audit files
+        if: always()
+        shell: bash
+        run: |
+          echo ""
+          echo "=========================================="
+          echo "VALIDATION AUDIT FILES"
+          echo "=========================================="
+
+          if [ -d "review" ]; then
+            found=false
+
+            for f in review/*_audit.json; do
+              if [ -f "$f" ]; then
+                found=true
+                echo ""
+                echo "=========================================="
+                echo "AUDIT FILE: $f"
+                echo "=========================================="
+                cat "$f"
+                echo ""
+              fi
+            done
+
+            if [ "$found" = false ]; then
+              echo "No audit JSON files found."
+            fi
+          else
+            echo "No review directory found."
+          fi
+
+      - name: Upload validation audits
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: meta-validation-audits
+          path: review/
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Show generated state summary
+        if: always()
+        shell: bash
+        run: |
+          echo ""
+          echo "=========================================="
+          echo "GENERATED FILES"
+          echo "=========================================="
+
+          if [ -d "docs/downloads" ]; then
+            ls -lh docs/downloads || true
+          fi
+
+          echo ""
+          echo "=========================================="
+          echo "DATA DIRECTORY"
+          echo "=========================================="
+
+          if [ -d "data" ]; then
+            ls -lh data || true
+          fi
+
       - name: Commit updated files
+        if: always()
+        shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-      
+
           git add docs/ data/
-      
+
           if git diff --cached --quiet; then
             echo "No changes detected"
           else
             git commit -m "Auto-update Meta reports"
-            git push
+
+            git pull --rebase origin main
+
+            git push origin main
           fi
+
+      - name: Report extractor failure
+        if: steps.extractor.outcome == 'failure'
+        run: |
+          echo "The Meta extractor encountered a fatal error."
+          echo "Validation audits were preserved above and uploaded as an artifact."
+          exit 1
