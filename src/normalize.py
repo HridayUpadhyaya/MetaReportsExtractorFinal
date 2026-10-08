@@ -16,7 +16,7 @@ def parse_number(raw: str) -> float:
     """
     s = clean_text(raw).upper().replace(",", "").strip()
     less_than = s.startswith("<")
-    s = s.lstrip("<").strip()
+    s = s.lstrip("<>").strip()
 
     # Allow a trailing unit word as well as a one-letter suffix.
     m = re.fullmatch(
@@ -64,7 +64,7 @@ CATEGORY_RULES = [
     (r"child endangerment.*nudity.*physical abuse|child.*nudity.*physical abuse", "Child Endangerment - Nudity and Physical Abuse"),
     (r"child endangerment.*sexual exploitation|child.*sexual exploitation", "Child Endangerment - Sexual Exploitation"),
     (r"organized hate|organised hate", "Dangerous Organizations and Individuals: Organized Hate"),
-    (r"terrorist propaganda|terrorism", 'Dangerous Organizations and Individuals: Terrorism (formerly "Terrorist Propaganda")'),
+    (r"terrorist\s*propaganda|terrorism", 'Dangerous Organizations and Individuals: Terrorism (formerly "Terrorist Propaganda")'),
     (r"hate speech", "Hate Speech"),
     (r"regulated goods.*drug|drugs", "Regulated Goods: Drugs"),
     (r"regulated goods.*firearm|firearms", "Regulated Goods: Firearms"),
@@ -80,6 +80,12 @@ def normalize_category(raw: str) -> str:
     s = clean_text(raw)
     s = re.sub(r"^\s*\d+[\.)]\s*", "", s)
     low = s.lower()
+    # Some PDF fonts omit every space during text extraction. Match only an
+    # exact canonical label after removing spacing and punctuation.
+    compact = re.sub(r"[^a-z0-9]", "", low)
+    for _, canonical in CATEGORY_RULES:
+        if compact == re.sub(r"[^a-z0-9]", "", canonical.lower()):
+            return canonical
     for pattern, canonical in CATEGORY_RULES:
         if re.search(pattern, low):
             return canonical

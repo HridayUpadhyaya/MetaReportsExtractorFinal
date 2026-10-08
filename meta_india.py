@@ -21,6 +21,12 @@ DOCS_OUTPUT = ROOT / "docs" / "downloads" / "meta_india_reports_latest.xlsx"
 TEMPLATE = ROOT / "template.xlsx"
 
 
+class ReportValidationError(RuntimeError):
+    def __init__(self, message: str, audit: dict):
+        super().__init__(message)
+        self.audit = audit
+
+
 def sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
@@ -61,12 +67,23 @@ def process_pdf_file(
         "period_start": parsed.get("period_start"),
         "period_end": parsed.get("period_end"),
         "report_published": parsed.get("report_published"),
+        "grievances": parsed.get("grievances"),
+        "expected_policy_counts": parsed.get("expected_policy_counts"),
         "row_count": len(parsed.get("rows", [])),
         "validation": {
             k: v
             for k, v in result.items()
             if k != "rows"
         },
+        "row_issues": [
+            {
+                "platform": row.get("platform"),
+                "policy_category": row.get("raw_policy_category"),
+                "issues": row.get("validation_issues"),
+            }
+            for row in result["rows"]
+            if row.get("validation_issues")
+        ],
     }
 
     if not result["ok"] and not include_review:
@@ -90,9 +107,10 @@ def process_pdf_file(
             encoding="utf-8",
         )
 
-        raise RuntimeError(
+        raise ReportValidationError(
             "Local PDF failed strict validation. "
-            f"Review file: {review_file}"
+            f"Review file: {review_file}",
+            audit,
         )
 
     state = load_state(STATE)
@@ -138,7 +156,19 @@ def process_pdf_file(
 
 
 def write_outputs(state: dict) -> None:
-    failed = state.get("failed", [])[-8:]
+    # Failed attempts cease to be outstanding when their edition succeeds.
+    # Keep the latest failure per edition so reruns do not inflate the count.
+    unresolved = {}
+    for failure in state.get("failed", []):
+        if isinstance(failure, dict):
+            key = failure.get("edition_key") or failure.get("url") or str(failure)
+            if failure.get("edition_key") in state.get("processed_editions", {}):
+                continue
+        else:
+            key = str(failure)
+        unresolved[key] = failure
+    state["failed"] = list(unresolved.values())
+    failed = state["failed"]
     build_workbook(TEMPLATE, OUTPUT, state.get("rows", []), failed_reports=failed)
 
     DOCS_OUTPUT.parent.mkdir(parents=True, exist_ok=True)
@@ -165,6 +195,16 @@ def write_outputs(state: dict) -> None:
     (ROOT / "docs" / "status.json").write_text(
         json.dumps(status, indent=2), encoding="utf-8"
     )
+    (ROOT / "docs" / "validation_audit.json").write_text(
+        json.dumps([
+            {"publication_month": item.get("publication_month"),
+             "edition_key": item.get("edition_key"),
+             "audit": item.get("audit"),
+             "error": item.get("error") if not item.get("audit") else None}
+            if isinstance(item, dict) else {"error": str(item)}
+            for item in failed
+        ], indent=2), encoding="utf-8",
+    )
     save_state(STATE, state)
     print(f"Excel written: {OUTPUT}")
     print(json.dumps(status, indent=2))
@@ -180,6 +220,7 @@ def cmd_sync(args):
     from src.browser_fetch import (
         browser_discover_india_monthly_reports,
         browser_download_direct,
+        _safe_filename,
     )
 
     profile_dir = ROOT / ".browser_profile"
@@ -299,19 +340,18 @@ def cmd_sync(args):
             continue
 
         try:
-            data, filename = browser_download_direct(
-                url=url,
-                profile_dir=profile_dir,
-                headed=False,
-            )
-
-            print(
-                f"Downloaded {len(data)} bytes."
-            )
-
-            pdf = CACHE / filename
-
-            pdf.write_bytes(data)
+            pdf = CACHE / _safe_filename(url)
+            if pdf.exists() and pdf.read_bytes().startswith(b"%PDF"):
+                print(f"Using cached PDF: {pdf}")
+            else:
+                data, filename = browser_download_direct(
+                    url=url,
+                    profile_dir=profile_dir,
+                    headed=False,
+                )
+                print(f"Downloaded {len(data)} bytes.")
+                pdf = CACHE / filename
+                pdf.write_bytes(data)
 
             print(
                 f"Saved temporary PDF: {pdf}"
@@ -363,6 +403,7 @@ def cmd_sync(args):
                     "publication_month": publication_month,
                     "url": url,
                     "error": str(exc),
+                    "audit": exc.audit if isinstance(exc, ReportValidationError) else None,
                     "failed_at": datetime.now(
                         timezone.utc
                     ).isoformat(),
@@ -455,7 +496,7 @@ def main():
     p.add_argument(
         "--max-new",
         type=int,
-        default=5,
+        default=15,
         help=(
             "Maximum number of missing historical reports "
             "to process per run. "

@@ -1,0 +1,470 @@
+[
+  {
+    "publication_month": "Nov 2021",
+    "edition_key": "2021|Nov 2021||",
+    "audit": {
+      "filename": "An_DKPlikOpd5HswFKr49BMBbJL2EXbzt4QNeVisB8WHsDUoIcid8xcrGonKimPEEQsIGb0E-U0kr8jxl-sqEmohBs9VLNq9Hfa5WSF8mTJdsOG_0VhDtGFXx_GPRi7kD2c_nLQ.pdf",
+      "sha256": "640520ccf0ca5ef618da3cb349b129ba917c80a396ea111a4ec9c6fb1b6274cf",
+      "period_start": "2021-11-01",
+      "period_end": "2021-11-30",
+      "report_published": "2021-12-30",
+      "row_count": 25,
+      "validation": {
+        "ok": false,
+        "report_issues": [
+          "expected_10_policy_rows:Facebook:found_13",
+          "expected_9_policy_rows:Instagram:found_12"
+        ],
+        "row_issue_count": 0
+      },
+      "row_issues": [
+        {
+          "platform": "Facebook",
+          "policy_category": "1. Adult Nudity and Sexual Activity",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Facebook",
+          "policy_category": "2. Bullying and Harassment",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Facebook",
+          "policy_category": "3. Child Endangerment - Nudity and Physical Abuse",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Facebook",
+          "policy_category": "4. Child Endangerment - Sexual Exploitation",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Facebook",
+          "policy_category": "5. Dangerous Organizations and Individuals: Organized Hate",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Facebook",
+          "policy_category": "6. Dangerous Organizations and Individuals: Terrorist Propaganda",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Facebook",
+          "policy_category": "7. Hate Speech",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Facebook",
+          "policy_category": "8. Regulated Goods: Drugs",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Facebook",
+          "policy_category": "9. Regulated Goods: Firearms",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Facebook",
+          "policy_category": "10. Suicide and Self-Injury",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Facebook",
+          "policy_category": "11. Spam",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Facebook",
+          "policy_category": "12. Violent and Graphic Content",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Facebook",
+          "policy_category": "13. Violence and Incitement",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Instagram",
+          "policy_category": "1. Adult Nudity and Sexual Activity",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Instagram",
+          "policy_category": "2. Bullying and Harassment",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Instagram",
+          "policy_category": "3. Child Endangerment - Nudity and Physical Abuse",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Instagram",
+          "policy_category": "4. Child Endangerment - Sexual Exploitation",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Instagram",
+          "policy_category": "5. Dangerous Organizations and Individuals: Organized Hate",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Instagram",
+          "policy_category": "6. Dangerous Organizations and Individuals: Terrorist Propaganda",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Instagram",
+          "policy_category": "7. Hate Speech",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Instagram",
+          "policy_category": "8. Regulated Goods: Drugs",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Instagram",
+          "policy_category": "9. Regulated Goods: Firearms",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Instagram",
+          "policy_category": "10. Suicide and Self-Injury",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Instagram",
+          "policy_category": "11. Violent and Graphic Content",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Instagram",
+          "policy_category": "12. Violence and Incitement",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        }
+      ]
+    },
+    "error": null
+  },
+  {
+    "publication_month": "Oct 2021",
+    "edition_key": "2021|Oct 2021||",
+    "audit": {
+      "filename": "An_Cno0HEGs1BTockRpqvYYsmWNtokPqN43Rl92V_YhfTLr7KnGJga6-vyHzKY-FuifELHPd_Js2S_W57VMXyDRuEzB2BhqvstCaEkBpGTwk2p3GhXQO52dsVzCzYVMgem-1NQ.pdf",
+      "sha256": "6e3d519dae5183570fbbb183b1aba765063e72a332d56b13b2427745f891a98f",
+      "period_start": "2021-10-01",
+      "period_end": "2021-10-31",
+      "report_published": "2021-12-01",
+      "row_count": 25,
+      "validation": {
+        "ok": false,
+        "report_issues": [
+          "expected_10_policy_rows:Facebook:found_13",
+          "expected_9_policy_rows:Instagram:found_12"
+        ],
+        "row_issue_count": 0
+      },
+      "row_issues": [
+        {
+          "platform": "Facebook",
+          "policy_category": "1. Adult Nudity and Sexual Activity",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Facebook",
+          "policy_category": "2. Bullying and Harassment",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Facebook",
+          "policy_category": "3. Child Endangerment - Nudity and Physical Abuse",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Facebook",
+          "policy_category": "4. Child Endangerment - Sexual Exploitation",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Facebook",
+          "policy_category": "5. Dangerous Organizations and Individuals: Organized Hate",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Facebook",
+          "policy_category": "6. Dangerous Organizations and Individuals: Terrorist Propaganda",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Facebook",
+          "policy_category": "7. Hate Speech",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Facebook",
+          "policy_category": "8. Regulated Goods: Drugs",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Facebook",
+          "policy_category": "9. Regulated Goods: Firearms",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Facebook",
+          "policy_category": "10. Suicide and Self-Injury",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Facebook",
+          "policy_category": "11. Spam",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Facebook",
+          "policy_category": "12. Violent and Graphic Content",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Facebook",
+          "policy_category": "13. Violence and Incitement",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Instagram",
+          "policy_category": "1. Adult Nudity and Sexual Activity",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Instagram",
+          "policy_category": "2. Bullying and Harassment",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Instagram",
+          "policy_category": "3. Child Endangerment - Nudity and Physical Abuse",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Instagram",
+          "policy_category": "4. Child Endangerment - Sexual Exploitation",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Instagram",
+          "policy_category": "5. Dangerous Organizations and Individuals: Organized Hate",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Instagram",
+          "policy_category": "6. Dangerous Organizations and Individuals: Terrorist Propaganda",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Instagram",
+          "policy_category": "7. Hate Speech",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Instagram",
+          "policy_category": "8. Regulated Goods: Drugs",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Instagram",
+          "policy_category": "9. Regulated Goods: Firearms",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Instagram",
+          "policy_category": "10. Suicide and Self-Injury",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Instagram",
+          "policy_category": "11. Violent and Graphic Content",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        },
+        {
+          "platform": "Instagram",
+          "policy_category": "12. Violence and Incitement",
+          "issues": [
+            "expected_10_policy_rows:Facebook:found_13",
+            "expected_9_policy_rows:Instagram:found_12"
+          ]
+        }
+      ]
+    },
+    "error": null
+  },
+  {
+    "publication_month": "Jun 2021 (part 2)",
+    "edition_key": "2021|Jun 2021 (part 2)||",
+    "audit": {
+      "filename": "An99Xl7rBoxiYBviG-ByO85V6PXgohQHjjSIQ9STxytQfeDP_1FHZTMTqH8b6HaCYie7TA4k2fJMgliOcL8vJQiGOI99JJfIP9i8WgAca8m4wfowlb4OXVZYI3Ber2KSnzaYuw.pdf",
+      "sha256": "5a1b4fd25b9896a1b23370622eb783fc716c09a82a7c7be9fead25c3970126da",
+      "period_start": null,
+      "period_end": null,
+      "report_published": "2021-07-15",
+      "row_count": 0,
+      "validation": {
+        "ok": false,
+        "report_issues": [
+          "missing_reporting_period",
+          "no_policy_rows"
+        ],
+        "row_issue_count": 0
+      },
+      "row_issues": []
+    },
+    "error": null
+  }
+]

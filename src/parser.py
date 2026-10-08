@@ -68,7 +68,7 @@ def _find_grievances(text: str) -> dict[str, int]:
         for hit in re.finditer(rf"\b{re.escape(platform)}\b", flat, re.I):
             section = flat[hit.end():hit.end() + 700]
             m = re.search(
-                r"^\s*(?:Between|For the period|During the period).{0,350}?received\s+([\d,]+)\s+(?:user\s+)?(?:reports|complaints|grievances)",
+                r"^\s*(?:Between|For the period|During the period).{0,350}?received\s+([\d,]+)\s*\**\s*(?:user\s+)?(?:reports|complaints|grievances)\b",
                 section, re.I
             )
             if m:
@@ -83,13 +83,48 @@ def _platform_from_context(context: str) -> str | None:
     return max(positions)[1] if positions else None
 
 
+def _policy_title_platform(text: str) -> str | None:
+    matches = re.findall(
+        r"content\s*actioned\s*and\s*proactive\s*rate\s*on\s*(Facebook|Instagram|Threads)",
+        text, re.I,
+    )
+    return matches[-1].title() if matches else None
+
+
+def _text_policy_rows(text: str):
+    """Recover complete numbered policy rows clipped by table-grid detection."""
+    platform = None
+    pattern = re.compile(
+        r"^\s*\d+[.)]\s*(.+?)\s+([<>]?\s*\d[\d,]*(?:\.\d+)?\s*(?:K|M|B|L)?)\s+(\d+(?:\.\d+)?\s*%?)\s*$",
+        re.I,
+    )
+    for line in text.splitlines():
+        title_platform = _policy_title_platform(line)
+        if title_platform:
+            platform = title_platform
+        if not platform:
+            continue
+        match = pattern.fullmatch(line)
+        if match:
+            raw_category, raw_action, raw_rate = match.groups()
+            category = normalize_category(raw_category)
+            # A known canonical label is required; prose and footnotes cannot
+            # masquerade as policy data just because they contain numbers.
+            from .validate import KNOWN_CATEGORIES
+            if category in KNOWN_CATEGORIES:
+                yield platform, raw_category, raw_action, raw_rate
+
+
 def _header_indexes(rows: list[list[str | None]]) -> tuple[int, int, int, int] | None:
+    """Find separate policy, action and rate columns, skipping merged titles."""
     for header_i in range(min(6, len(rows))):
         header = [clean_text(x).lower() for x in rows[header_i]]
+        if sum(bool(cell) for cell in header) < 3:
+            continue
         action_i = next((i for i, x in enumerate(header) if "action" in x and ("content" in x or "piece" in x)), None)
         rate_i = next((i for i, x in enumerate(header) if "proactive" in x and ("rate" in x or "%" in x)), None)
-        category_i = next((i for i, x in enumerate(header) if any(k in x for k in ["policy", "category", "standard", "area"])), 0)
-        if action_i is not None and rate_i is not None:
+        category_i = next((i for i, x in enumerate(header) if any(k in x for k in ["policy", "category", "standard", "area"])), None)
+        if None not in (category_i, action_i, rate_i) and len({category_i, action_i, rate_i}) == 3:
             return header_i, category_i, action_i, rate_i
     return None
 
@@ -210,7 +245,13 @@ def parse_pdf(pdf_bytes: bytes, title: str | None = None, source_url: str | None
                         context = page.crop((0, top, page.width, table_obj.bbox[1])).extract_text() or text[:3500]
                     except Exception:
                         context = text[:3500]
-                    platform = _platform_from_context(context) or page_platform or last_policy_platform
+                    table_title = " ".join(clean_text(cell) for row in rows[:header_i] for cell in row)
+                    platform = (
+                        _policy_title_platform(table_title)
+                        or _policy_title_platform(context)
+                        or _platform_from_context(context)
+                        or page_platform or last_policy_platform
+                    )
                     if not platform:
                         continue
                     last_policy_platform = platform
@@ -277,6 +318,27 @@ def parse_pdf(pdf_bytes: bytes, title: str | None = None, source_url: str | None
                         "confidence": 0.98,
                     })
 
+            for platform, raw_cat, raw_action, raw_rate in _text_policy_rows(text):
+                try:
+                    numeric = parse_number(raw_action)
+                    rate = parse_rate(raw_rate)
+                except ValueError:
+                    continue
+                platform_order[platform] += 1
+                candidates.append({
+                    "platform": platform,
+                    "policy_order": platform_order[platform],
+                    "raw_policy_category": raw_cat,
+                    "policy_category": normalize_category(raw_cat),
+                    "content_actioned_raw": raw_action,
+                    "content_actioned_numeric": numeric,
+                    "proactive_rate": rate,
+                    "source_page": page_num,
+                    "source_url": source_url,
+                    "extraction_method": "deterministic_text",
+                    "confidence": 0.97,
+                })
+
     # De-duplicate the same policy if both the regular and continuation paths
     # saw it. Prefer the first/high-confidence occurrence.
     rows_out: list[dict] = []
@@ -299,6 +361,13 @@ def parse_pdf(pdf_bytes: bytes, title: str | None = None, source_url: str | None
     grievances = _find_grievances(full_text)
     published = _find_published(full_text)
     month = end.strftime("%b-%Y") if end else "Unknown"
+    source_note = None
+    caveat = re.search(
+        r"Due to a technical issue with our logging,.*?the total number of grievance reports received.*?may be larger than what is reported here\.",
+        clean_text(full_text), re.I,
+    )
+    if caveat:
+        source_note = caveat.group(0)
     for row in rows_out:
         row.update({
             "month": month,
@@ -306,6 +375,7 @@ def parse_pdf(pdf_bytes: bytes, title: str | None = None, source_url: str | None
             "period_end": end.isoformat() if end else None,
             "report_published": published,
             "total_user_grievances": grievances.get(row["platform"]),
+            "source_notes": source_note,
         })
 
     expected_counts = _expected_policy_counts(full_text)

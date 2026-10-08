@@ -15,8 +15,8 @@ def page(message: str = "") -> str:
     return f'''<!doctype html><html><head><meta charset="utf-8"><title>Meta India Report Extractor</title>
 <style>body{{font-family:Segoe UI,Arial;max-width:900px;margin:40px auto;padding:0 20px}}input{{width:100%;padding:10px}}button{{padding:10px 16px;margin-top:10px}}pre{{white-space:pre-wrap;background:#f5f5f5;padding:12px}}</style></head><body>
 <h1>Meta India Report Extractor</h1>
-<p><b>Browser-safe mode:</b> Sync opens the Meta hub once in Chrome instead of Python requests, then fetches at most one new PDF. No URL guessing, no HEAD probes, no retries.</p>
-<h2>Automatic discovery</h2><form method="post" action="/sync"><button>Open Meta once in Chrome + sync one PDF</button></form>
+<p><b>Browser-safe mode:</b> Sync opens the Meta hub once in Chrome instead of Python requests, then fetches at most 15 new PDFs. No URL guessing, no HEAD probes, no retries.</p>
+<h2>Automatic discovery</h2><form method="post" action="/sync"><button>Open Meta once in Chrome + sync up to 15 PDFs</button></form>
 <h2>Known direct PDF URL</h2><form method="post" action="/direct"><input name="pdf_url" placeholder="Paste the official direct .pdf URL"><button>Download + parse this PDF</button></form>
 {link}<pre>{message}</pre></body></html>'''
 
@@ -25,7 +25,7 @@ def home(): return page()
 
 @app.post("/sync", response_class=HTMLResponse)
 def sync():
-    r = subprocess.run([sys.executable, str(ROOT/"meta_india.py"), "sync", "--max-new", "1"], cwd=ROOT, text=True, capture_output=True)
+    r = subprocess.run([sys.executable, str(ROOT/"meta_india.py"), "sync", "--max-new", "15"], cwd=ROOT, text=True, capture_output=True)
     return page((r.stdout + "\n" + r.stderr)[-12000:])
 
 @app.post("/direct", response_class=HTMLResponse)

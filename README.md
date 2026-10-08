@@ -4,12 +4,12 @@ This project was designed to avoid the HTTP-429 problem caused by probing hundre
 
 ## Request behavior
 
-`python meta_india.py sync --max-new 1` has a **hard budget of 2 Meta HTTP requests**:
+`python meta_india.py sync --max-new 15` opens the Meta report hub once in a browser, then processes up to 15 missing editions:
 
-1. exactly one GET to the Regulatory Transparency Reports hub;
-2. at most one GET for one newly discovered PDF.
+1. one browser navigation to the Regulatory Transparency Reports hub;
+2. at most 15 explicit PDF fetches, with already-cached PDFs reused.
 
-There are **no HEAD requests, no guessed URLs, no automatic retries, and redirects are disabled**. If Meta returns 429, the program stops immediately.
+There are **no HEAD probes, no guessed URLs, and no automatic retries**. Browser subresources and CDN redirects can create additional HTTP requests. If Meta returns 429, the program stops immediately.
 
 If you already know the official direct PDF URL:
 
@@ -17,9 +17,9 @@ If you already know the official direct PDF URL:
 python meta_india.py direct --pdf-url "https://...file.pdf"
 ```
 
-that mode makes **exactly one Meta HTTP request total**: the PDF GET.
+that mode makes one explicit PDF fetch without opening the hub. CDN redirects are allowed.
 
-A literal one-request workflow cannot both discover an unknown file and download its bytes unless Meta puts the PDF bytes in the listing response. So `direct` is the exact-one-request mode; `sync` is the minimum practical automatic mode.
+Use `direct` for a known PDF URL and `sync` for automatic discovery and historical backfill.
 
 ## Accuracy model
 
@@ -36,7 +36,7 @@ The Excel export uses `template.xlsx`, which is the workbook supplied for this p
 
 1. Extract the ZIP.
 2. Double-click `setup.bat` once.
-3. Double-click `run_sync.bat` to try automatic discovery with at most 2 Meta requests.
+3. Double-click `run_sync.bat` to discover and process up to 15 missing reports.
 4. Or double-click `run_web.bat` and open `http://127.0.0.1:8000`.
 
 Generated workbook:
@@ -55,7 +55,7 @@ If the hub response does not expose direct PDFs, open the report in your browser
 .\.venv\Scripts\python.exe .\meta_india.py direct --pdf-url "PASTE_DIRECT_PDF_URL"
 ```
 
-This is exactly one Meta request and is the safest mode for avoiding rate limits.
+This fetches the known PDF without a hub navigation.
 
 ## Historical backfill
 
