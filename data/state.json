@@ -34099,7 +34099,7 @@
     {
       "edition_key": "2021|Nov 2021||",
       "publication_month": "Nov 2021",
-      "url": "https://scontent-sjc6-1.xx.fbcdn.net/m1/v/t0.84174-6/AQPHM6DduuKRRn-z2OWVSVkFgKJXQtdwYxBJ2nBRLwSyXvIZtcpikikvT7qblbrJ-FEms97hotyITZG5XXHxap8qpARRDPAi_TRaXa8BN4kT8q9jZze7_WE9VLIeKDKBDQhgqST73NnS3Ys5DRbseM47HKH4clQTzOgKkD014g?_nc_gid=bKDaJLtZ1x1tkjGWZMTHOA&_nc_oc=Adqjxl8qEddnV9YacbgIqG5DQP85WL4gEyhiLY2CqijOLghRNQtM3SAonospXEZbAA4&ccb=10-5&oh=00_AQQpE6nkgh17AzN9Jq7Unru_EfzsE0D9Xj7AibUR-VsKQA&oe=6AE8EFE6&_nc_sid=68f2c3",
+      "url": "https://scontent-ord5-1.xx.fbcdn.net/m1/v/t0.84174-6/AQPHM6DduuKRRn-z2OWVSVkFgKJXQtdwYxBJ2nBRLwSyXvIZtcpikikvT7qblbrJ-FEms97hotyITZG5XXHxap8qpARRDPAi_TRaXa8BN4kT8q9jZze7_WE9VLIeKDKBDQhgqST73NnS3Ys5DRbseM47HKH4clQTzOgKkD014g?_nc_gid=r0ToQmpCblbZ47Ld95KxXQ&_nc_oc=Adp0bwhTMHmtOXCBDT0PV4iyqkxNNPyDnazBIO-7GzUo2mJD3AOwEQWNru6_5tF3Dbk&ccb=10-5&oh=00_AQRKptABCyu_Hs_OTbyOzPGC7_reFHGfBiLtxo1dtVy4mA&oe=6AEA4166&_nc_sid=68f2c3",
       "error": "Local PDF failed strict validation. Review file: /home/runner/work/MetaReportsExtractorFinal/MetaReportsExtractorFinal/review/2021-11-30_audit.json",
       "audit": {
         "filename": "AQPHM6DduuKRRn-z2OWVSVkFgKJXQtdwYxBJ2nBRLwSyXvIZtcpikikvT7qblbrJ-FEms97hotyITZG5XXHxap8qpARRDPAi_TRaXa8BN4kT8q9jZze7_WE9VLIeKDKBDQhgqST73NnS3Ys5DRbseM47HKH4clQTzOgKkD014g.pdf",
@@ -34327,12 +34327,12 @@
           }
         ]
       },
-      "failed_at": "2026-11-01T09:28:17.909866+00:00"
+      "failed_at": "2026-11-02T09:43:57.705672+00:00"
     },
     {
       "edition_key": "2021|Oct 2021||",
       "publication_month": "Oct 2021",
-      "url": "https://scontent-sjc6-1.xx.fbcdn.net/m1/v/t0.84174-6/AQN47lwb5OvRfXWCo_a6kDVIKLphJgCwCovFUuB9xTS3WShu6lUEmxquOFXpcu6R2xZvhqU0EUesAXvOkE6OcFPXiYs_WcezagfX7igsQrDRhjv5YI-g1SrqmP_GM2qeiRHqVsqyHQQlAx2EwR16xddfLh0XeH025unnIj08?_nc_gid=bKDaJLtZ1x1tkjGWZMTHOA&_nc_oc=AdqZ6ZY3u_ClbFDW8YoysS2A7iEl4wuL1CjJQcrMQ14Dg3X00OAds7Kya405z77jEVY&ccb=10-5&oh=00_AQSkEzZzu9Nb0hOmmHVDAgxkZGZeJlPvBLe1H5hvLMdmtQ&oe=6AE8CC00&_nc_sid=68f2c3",
+      "url": "https://scontent-ord5-1.xx.fbcdn.net/m1/v/t0.84174-6/AQN47lwb5OvRfXWCo_a6kDVIKLphJgCwCovFUuB9xTS3WShu6lUEmxquOFXpcu6R2xZvhqU0EUesAXvOkE6OcFPXiYs_WcezagfX7igsQrDRhjv5YI-g1SrqmP_GM2qeiRHqVsqyHQQlAx2EwR16xddfLh0XeH025unnIj08?_nc_gid=r0ToQmpCblbZ47Ld95KxXQ&_nc_oc=AdqsqRLhtn5-HzvZYX4nJlUxcfaJGY29zo6upykfdW78EimWoAOgGF-gcCshnX0WKhQ&ccb=10-5&oh=00_AQR1EzrTvUyMhuBtKkL5jd7rB3sNwN6OE5z10oKRbSjenQ&oe=6AEA1D80&_nc_sid=68f2c3",
       "error": "Local PDF failed strict validation. Review file: /home/runner/work/MetaReportsExtractorFinal/MetaReportsExtractorFinal/review/2021-10-31_audit.json",
       "audit": {
         "filename": "AQN47lwb5OvRfXWCo_a6kDVIKLphJgCwCovFUuB9xTS3WShu6lUEmxquOFXpcu6R2xZvhqU0EUesAXvOkE6OcFPXiYs_WcezagfX7igsQrDRhjv5YI-g1SrqmP_GM2qeiRHqVsqyHQQlAx2EwR16xddfLh0XeH025unnIj08.pdf",
@@ -34560,12 +34560,12 @@
           }
         ]
       },
-      "failed_at": "2026-11-01T09:28:20.377333+00:00"
+      "failed_at": "2026-11-02T09:43:59.790727+00:00"
     },
     {
       "edition_key": "2021|Jun 2021 (part 2)||",
       "publication_month": "Jun 2021 (part 2)",
-      "url": "https://scontent-sjc6-1.xx.fbcdn.net/m1/v/t0.84174-6/AQN_hHC5hl1vYjcL1MFI_FuRKu9Bu2I-jTZD8ImwoZCC_7zXxcQAno4eWLxu8Qw41fKqVTBZz9bac8xTBbaLAEhr3sO00LACqN6wC4U5cVqx4S6iAWhVAHh1EhU2kedfZ8JOWmCvPmZlcg4aYjPDN7oxMv9cb-69QetqK_K6?_nc_gid=bKDaJLtZ1x1tkjGWZMTHOA&_nc_oc=AdooPGWNgREbsncPmZE2-sE8A_GOYyzwNRbbUvCf6PjZLPFCg6FGGxx-Ar98-Mu2aPY&ccb=10-5&oh=00_AQTXmIVY5Mq_4KNhflIH3iNO2rySn8GmgDMOJ9nf7D5CEw&oe=6AE8F64E&_nc_sid=68f2c3",
+      "url": "https://scontent-ord5-1.xx.fbcdn.net/m1/v/t0.84174-6/AQN_hHC5hl1vYjcL1MFI_FuRKu9Bu2I-jTZD8ImwoZCC_7zXxcQAno4eWLxu8Qw41fKqVTBZz9bac8xTBbaLAEhr3sO00LACqN6wC4U5cVqx4S6iAWhVAHh1EhU2kedfZ8JOWmCvPmZlcg4aYjPDN7oxMv9cb-69QetqK_K6?_nc_gid=r0ToQmpCblbZ47Ld95KxXQ&_nc_oc=AdpqbKICTeoRDm4bOpRAIM9ZBk3nnC73gua8pGGeAY6ABFTeNk1O5jeK4hV1jQOh7gw&ccb=10-5&oh=00_AQQc89mLcAtamBWi_yqpWk10kXwlETVngSpjLXQc-1iYxw&oe=6AEA47CE&_nc_sid=68f2c3",
       "error": "Local PDF failed strict validation. Review file: /home/runner/work/MetaReportsExtractorFinal/MetaReportsExtractorFinal/review/AQN_hHC5hl1vYjcL1MFI_FuRKu9Bu2I-jTZD8ImwoZCC_7zXxcQAno4eWLxu8Qw41fKqVTBZz9bac8xTBbaLAEhr3sO00LACqN6wC4U5cVqx4S6iAWhVAHh1EhU2kedfZ8JOWmCvPmZlcg4aYjPDN7oxMv9cb-69QetqK_K6_audit.json",
       "audit": {
         "filename": "AQN_hHC5hl1vYjcL1MFI_FuRKu9Bu2I-jTZD8ImwoZCC_7zXxcQAno4eWLxu8Qw41fKqVTBZz9bac8xTBbaLAEhr3sO00LACqN6wC4U5cVqx4S6iAWhVAHh1EhU2kedfZ8JOWmCvPmZlcg4aYjPDN7oxMv9cb-69QetqK_K6.pdf",
@@ -34589,7 +34589,7 @@
         },
         "row_issues": []
       },
-      "failed_at": "2026-11-01T09:28:22.000699+00:00"
+      "failed_at": "2026-11-02T09:44:01.111888+00:00"
     }
   ],
   "processed_editions": {
